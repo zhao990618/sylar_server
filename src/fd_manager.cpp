@@ -1,5 +1,7 @@
 #include "fd_manager.h"
 #include "sys/stat.h"
+#include "sys/types.h"
+#include <unistd.h>
 #include "hook.h"
 
 /*
@@ -81,11 +83,26 @@ namespace sylar
 
     void FdCtx::setTimeout(int type, uint64_t v)
     {
+        if (type == SO_RCVTIMEO)
+        {
+            m_recvTimeout = v;
+        }
+        else
+        {
+            m_sendTimeout = v;
+        }
 
     }
     uint64_t FdCtx::getTimeout(int type)
     {
-
+        if (type == SO_RCVTIMEO)
+        {
+            return m_recvTimeout;
+        }
+        else
+        {
+            return m_sendTimeout;
+        }
     }
 
     FdManager::FdManager()
@@ -93,12 +110,41 @@ namespace sylar
         m_datas.resize(64);
     }
     
-    FdCtx::ptr FdManager::get(int fd, bool auto_create = false)
+    FdCtx::ptr FdManager::get(int fd, bool auto_create)
     {
+        RWMutexType::ReadLock lock(m_mutex);
+        // 说明fd不在m_datas 的范围内 m_datas.resize(64)
+        if (m_datas.size() < fd)
+        {
+            // 不需要自动创建FdCtx
+            if(!auto_create)
+            {
+                return nullptr;
+            }
+        }
+        else
+        {   // 说明fd在m_datas 的范围内 m_datas.resize(64);并且不需要创建FdCtx
+            if (m_datas[fd] || !auto_create)
+            {
+                return m_datas[fd];
+            }
+        }
+        // 需要创建FdCtx并且fd在m_datas的范围内
+        lock.unlock();
 
+        RWMutexType::WriteLock lock2(m_mutex);
+        FdCtx::ptr ctx(new FdCtx(fd));
+        m_datas[fd] = ctx;
+        return ctx;
     }
     void FdManager::del(int fd)
     {
-
+        RWMutexType::WriteLock lock(m_mutex);
+        // 即fd已经不存在于 m_datas中
+        if (m_datas.size() < fd)
+        {
+            return;
+        }
+        m_datas[fd].reset();
     }
 }

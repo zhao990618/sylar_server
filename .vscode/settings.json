@@ -63,7 +63,8 @@
         "valarray": "cpp",
         "unordered_set": "cpp",
         "condition_variable": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "cfenv": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }
