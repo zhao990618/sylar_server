@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/home/zhaoyangfan/LinuxStudio/server/sylar/bin/test_config"
+			"path" : "/home/zhaoyangfan/LinuxStudio/server/sylar/bin/test_iomanager"
 		}
 	],
 	"backtrace" : 1,
@@ -28,7 +28,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 50,
+				"line" : 71,
 				"parent" : 0
 			},
 			{
@@ -40,13 +40,13 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 52,
+				"line" : 73,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 51,
+				"line" : 72,
 				"parent" : 0
 			},
 			{
@@ -87,7 +87,7 @@
 			"id" : "sylar::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "test_config::@6890427a1f51a3e7e1df",
+	"id" : "test_iomanager::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -132,8 +132,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "test_config",
-	"nameOnDisk" : "test_config",
+	"name" : "test_iomanager",
+	"nameOnDisk" : "test_iomanager",
 	"paths" : 
 	{
 		"build" : ".",
@@ -154,7 +154,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "tests/test_config.cpp",
+			"path" : "tests/test_iomanager.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

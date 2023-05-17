@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/home/zhaoyangfan/LinuxStudio/server/sylar/bin/test_thread"
+			"path" : "/home/zhaoyangfan/LinuxStudio/server/sylar/bin/test_util"
 		}
 	],
 	"backtrace" : 1,
@@ -28,7 +28,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 54,
+				"line" : 59,
 				"parent" : 0
 			},
 			{
@@ -40,13 +40,13 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 56,
+				"line" : 61,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 55,
+				"line" : 60,
 				"parent" : 0
 			},
 			{
@@ -87,7 +87,7 @@
 			"id" : "sylar::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "test_thread::@6890427a1f51a3e7e1df",
+	"id" : "test_util::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -132,8 +132,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "test_thread",
-	"nameOnDisk" : "test_thread",
+	"name" : "test_util",
+	"nameOnDisk" : "test_util",
 	"paths" : 
 	{
 		"build" : ".",
@@ -154,7 +154,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "tests/test_thread.cpp",
+			"path" : "tests/test_util.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

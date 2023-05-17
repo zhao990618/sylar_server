@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/home/zhaoyangfan/LinuxStudio/server/sylar/bin/test_hook"
+			"path" : "/home/zhaoyangfan/LinuxStudio/server/sylar/bin/test_scheduler"
 		}
 	],
 	"backtrace" : 1,
@@ -28,7 +28,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 74,
+				"line" : 67,
 				"parent" : 0
 			},
 			{
@@ -40,13 +40,13 @@
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 76,
+				"line" : 69,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 75,
+				"line" : 68,
 				"parent" : 0
 			},
 			{
@@ -87,7 +87,7 @@
 			"id" : "sylar::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "test_hook::@6890427a1f51a3e7e1df",
+	"id" : "test_scheduler::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -132,8 +132,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "test_hook",
-	"nameOnDisk" : "test_hook",
+	"name" : "test_scheduler",
+	"nameOnDisk" : "test_scheduler",
 	"paths" : 
 	{
 		"build" : ".",
@@ -154,7 +154,7 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "tests/test_hook.cpp",
+			"path" : "tests/test_scheduler.cpp",
 			"sourceGroupIndex" : 0
 		}
 	],

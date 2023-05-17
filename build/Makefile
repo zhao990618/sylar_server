@@ -260,6 +260,30 @@ src/config.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/config.cpp.s
 .PHONY : src/config.cpp.s
 
+src/fd_manager.o: src/fd_manager.cpp.o
+.PHONY : src/fd_manager.o
+
+# target to build an object file
+src/fd_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/fd_manager.cpp.o
+.PHONY : src/fd_manager.cpp.o
+
+src/fd_manager.i: src/fd_manager.cpp.i
+.PHONY : src/fd_manager.i
+
+# target to preprocess a source file
+src/fd_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/fd_manager.cpp.i
+.PHONY : src/fd_manager.cpp.i
+
+src/fd_manager.s: src/fd_manager.cpp.s
+.PHONY : src/fd_manager.s
+
+# target to generate assembly for a file
+src/fd_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/fd_manager.cpp.s
+.PHONY : src/fd_manager.cpp.s
+
 src/fiber.o: src/fiber.cpp.o
 .PHONY : src/fiber.o
 
@@ -664,6 +688,9 @@ help:
 	@echo "... src/config.o"
 	@echo "... src/config.i"
 	@echo "... src/config.s"
+	@echo "... src/fd_manager.o"
+	@echo "... src/fd_manager.i"
+	@echo "... src/fd_manager.s"
 	@echo "... src/fiber.o"
 	@echo "... src/fiber.i"
 	@echo "... src/fiber.s"

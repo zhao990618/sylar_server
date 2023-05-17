@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/config.cpp" "CMakeFiles/sylar.dir/src/config.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/config.cpp.o.d"
+  "/home/zhaoyangfan/LinuxStudio/server/sylar/src/fd_manager.cpp" "CMakeFiles/sylar.dir/src/fd_manager.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/fd_manager.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/fiber.cpp" "CMakeFiles/sylar.dir/src/fiber.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/fiber.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/hook.cpp" "CMakeFiles/sylar.dir/src/hook.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/hook.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/iomanager.cpp" "CMakeFiles/sylar.dir/src/iomanager.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/iomanager.cpp.o.d"
