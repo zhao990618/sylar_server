@@ -9,7 +9,7 @@
 
 namespace sylar
 {
-    sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
+    static sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 #if 1
     IOManager::FdContext::EventContext& IOManager::FdContext::getContext(IOManager::Event event)
     {

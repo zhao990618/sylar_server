@@ -114,7 +114,7 @@ namespace sylar
     {
         RWMutexType::ReadLock lock(m_mutex);
         // 说明fd不在m_datas 的范围内 m_datas.resize(64)
-        if (m_datas.size() < fd)
+        if ((int)m_datas.size() < fd)
         {
             // 不需要自动创建FdCtx
             if(!auto_create)
@@ -141,7 +141,7 @@ namespace sylar
     {
         RWMutexType::WriteLock lock(m_mutex);
         // 即fd已经不存在于 m_datas中
-        if (m_datas.size() < fd)
+        if ((int)m_datas.size() < fd)
         {
             return;
         }

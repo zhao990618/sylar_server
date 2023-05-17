@@ -19,6 +19,7 @@ link_directories(/usr/local/lib)
 
 set(LIB_SRC
     src/config.cpp
+    src/fd_manager.cpp
     src/fiber.cpp
     src/hook.cpp
     src/iomanager.cpp
