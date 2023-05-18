@@ -267,13 +267,112 @@ namespace sylar
                 sylar::FdMgr::GetInstance()->get(fd, true);
                 return fd;
         }
+        
+        int connect_with_timeout(int sockfd, const struct sockaddr* addr, socklen_t addrlen, uint64_t timeout_ms)
+        {
+                if (!t_hook_enable)
+                {
+                    return connect_f(sockfd, addr, addrlen);
+                }
+                sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(sockfd);
+                // 如果ctx不存在或者ctx已经关闭了
+                if (!ctx || ctx->isClose())
+                {
+                    errno = EBADE;
+                    return -1;
+                }
+                // 如果ctx 不是socket的话
+                if (!ctx->isSocket())
+                {
+                    return connect_f(sockfd, addr, addrlen);
+                }
+                // 如果是用户已经设定了 O_NONBLOCK
+                if (ctx->getUserNonblock())
+                {
+                    return connect_f(sockfd, addr, addrlen);
+                }
+
+                int n = connect_f(sockfd, addr, addrlen);
+                if (n == 0)
+                {
+                    return 0;
+                }
+                else if (n != -1 || errno != EINPROGRESS)
+                {
+                    return n;
+                }
+                // 加下来就是 n == -1 && errno == EINPROGRESS 的情况
+                sylar::IOManager* iom = sylar::IOManager::GetThis();
+                sylar::Timer::ptr timer;
+                // 设置条件定时器
+                std::shared_ptr<timer_info> tinfo(new timer_info);
+                std::weak_ptr<timer_info> winfo(tinfo);
+
+                // 有超时时间
+                if (timeout_ms != (uint64_t)-1)
+                {
+                    timer = iom->addConditionTimer(timeout_ms, [winfo, sockfd, iom](){
+                        auto t = winfo.lock();
+                        // 如果t不存在亦或者t的cancelled == true (意味着被取消了)
+                        if (!t || t->cancelled)
+                        {
+                            return;
+                        }
+                        // 如果t存在，那么设置条件超时
+                        t->cancelled = ETIMEDOUT;
+                        iom->cancelEvent(sockfd, sylar::IOManager::WRITE);
+                    }, winfo);        
+                }
+                int rt = iom->addEvent(sockfd, sylar::IOManager::WRITE);
+                if (rt == 0)
+                {
+                    sylar::Fiber::YieldToHold();
+                    // 如果被唤醒的话 -- 
+                    // timer还存在， 那么就取消定时器
+                    if (timer)
+                    {
+                        timer->cancel();
+                    }
+                    // 如果tinfo条件被取消了
+                    if (tinfo->cancelled)
+                    {
+                        errno =tinfo->cancelled;
+                        return -1;
+                    } 
+                }
+                else
+                {
+                    // 如果添加时间失败了
+                    // 还有定时器就取消定时器
+                    if (timer)
+                    {
+                        timer->cancel();
+                    }
+                    SYLAR_LOG_ERROR(g_logger) << "connnet addEvent(" << sockfd << ", WRITE) error";
+                }
+                int error = 0;
+                socklen_t len = sizeof(int);
+                // 看有没有error
+                if (-1 == getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &len))
+                {
+                    return -1;
+                }
+                // 如果没有错误
+                if (!error)
+                {
+                    return 0;
+                }
+                else
+                {
+                    // 有错误
+                    errno = error;
+                    return -1;
+                }
+        }
 
         int connect(int sockfd, const struct sockaddr *addr,socklen_t addrlen)
         {
-                // if (!t_hook_enable)
-                // {
-                //     return connect_f(sockfd, addr, addrlen);
-                // }
+
                 return connect_f(sockfd, addr, addrlen);
         }
         
@@ -369,24 +468,158 @@ namespace sylar
         
         int fcntl(int fd, int cmd, ... /* arg */ )
         {
-                
+            va_list va;
+            //可以获取可变参数(...)参数列表中的第一个参数的地址并由va_list类型返回
+            // va -> ...
+            va_start(va, cmd);
+            switch(cmd)
+            {
+                // int类型的 --- cmd类型代表了后续参数的类型
+                case F_SETFL:
+                    {
+                        int arg = va_arg(va, int);
+                        va_end(va);
+                        // FdManager类型的指针调用get返回了fdctx类型的指针
+                        sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
+                        // 如果ctx不存在或者ctx存在但是fd已经被关闭了
+                        if (!ctx || ctx->isClose() || !ctx->isSocket())
+                        {
+                            return fcntl_f(fd, cmd, arg);
+                        }
+
+                        ctx->setUserNonblock(arg & O_NONBLOCK);
+                        if (ctx->getSysNonblock())
+                        {
+                            // 如果是系统设置的nonblock,那就添加上非阻塞
+                            arg |= O_NONBLOCK;
+                        }
+                        else
+                        {
+                            // 如果不是, 那就删除掉非阻塞
+                            arg &= ~O_NONBLOCK;
+                        }
+                        return fcntl_f(fd, cmd ,arg);
+                    }
+                case F_GETFL:
+                    {
+                        va_end(va);
+                        int arg = fcntl_f(fd, cmd);
+                        sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
+                        if (!ctx || ctx->isClose() || !ctx->isSocket()) 
+                        {
+                            return arg;
+                        }
+                        if (ctx->getUserNonblock()) 
+                        {
+                            return arg | O_NONBLOCK;
+                        } else 
+                        {
+                            return arg & ~O_NONBLOCK;
+                        }
+                    }
+                    break;
+                case F_DUPFD_CLOEXEC:
+                case F_SETFD:
+                case F_DUPFD:
+                case F_SETOWN:
+                case F_SETSIG:
+                case F_SETLEASE:
+                case F_NOTIFY:
+                case F_SETPIPE_SZ:
+                    {
+                        // 获取可变参数的当前参数，返回指定类型并将指针指向下一参数
+                        int arg = va_arg(va, int);
+                        // 清空va_list 可变参数列表
+                        va_end(va); 
+                        return fcntl_f(fd, cmd, arg);
+                    }
+                    break;
+                // void类型的 --- cmd类型代表了后续参数的类型
+                case F_GETFD:
+                case F_GETOWN:
+                case F_GETSIG:
+                case F_GETLEASE:
+                case F_GETPIPE_SZ:
+                    {
+                        va_end(va);
+                        return fcntl_f(fd, cmd);
+                    }
+                    break;
+                // struct (flock)类型的 --- cmd类型代表了后续参数的类型
+                case F_SETLK:
+                case F_SETLKW:
+                case F_GETLK:
+                    {
+                        struct flock* arg = va_arg(va, struct flock*);
+                        va_end(va);
+                        return fcntl_f(fd, cmd, arg);
+                    }
+                    break;
+                // struct (f_owner_exlock)类型的 --- cmd类型代表了后续参数的类型
+                case F_GETOWN_EX:
+                case F_SETOWN_EX:
+                    {
+                        struct f_owner_ex* arg = va_arg(va, struct f_owner_ex*);
+                        va_end(va);
+                        return fcntl_f(fd, cmd, arg);
+                    }
+                    break;
+                default:
+                    va_end(va);
+                    return fcntl_f(fd, cmd);
+
+
+            }
         }
 
         int ioctl(int fd, unsigned long request, ...)
         {
+            va_list va;
+            va_start(va, request);
+            void* arg = va_arg(va, void*);
+            va_end(va);
 
+            if (FIONBIO == request)
+            {
+                // arg先强转成 int*类型，然后*是取值，随后！！是将值转化为0或者1
+                bool user_nonblock = !!*(int *)arg;
+                sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
+                if (!ctx || ctx->isClose() || ctx->isSocket())
+                {
+                    return ioctl_f(fd, request, arg);
+                }
+                ctx->setUserNonblock(user_nonblock);
+            }
+            return ioctl_f(fd, request, arg);
         }
         
         int getsockopt(int sockfd, int level, int optname,
                         void *optval, socklen_t *optlen)
         {
-
+            return getsockopt_f(sockfd,level, optname, optval, optlen);
         }
         
         int setsockopt(int sockfd, int level, int optname,
                         const void *optval, socklen_t optlen)
         {
-
+            if (!sylar::t_hook_enable)
+            {
+                setsockopt_f(sockfd, level, optname, optval, optlen);
+            }
+            if (level == SOL_SOCKET)
+            {
+                // 判断是否有超时时间--根据超时时间类型进行匹配
+                if (optname == SO_RCVTIMEO || optname == SO_SNDTIMEO)
+                {
+                    sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(sockfd);
+                    if (ctx)
+                    {
+                        const timeval* tv = (const timeval*)optval;
+                        ctx->setTimeout(optname, tv->tv_sec * 1000 + tv->tv_usec / 1000);
+                    }
+                }
+                return setsockopt_f(sockfd, level, optname, optval, optlen);
+            }
         }
 
     }
