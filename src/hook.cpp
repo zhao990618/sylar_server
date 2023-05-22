@@ -1,3 +1,4 @@
+#include "config.h"
 #include "hook.h"
 #include "log.h"
 #include "fiber.h"
@@ -8,29 +9,31 @@
 sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 namespace sylar
 {
+    static sylar::ConfigVar<int>::ptr g_tcp_connect_timeout =
+        sylar::Config::Lookup("tcp.connect.timeout", 5000, "tcp connect timeout");
     static thread_local bool t_hook_enable = false;
-    #define HOOK_FUN(XX)\
-        XX(sleep)\
-        XX(usleep)\
-        XX(nanosleep)\
-        XX(socket)\
-        XX(connect)\
-        XX(accept)\
-        XX(fcntl)\
-        XX(ioctl)\
-        XX(getsockopt)\
-        XX(setsockopt)\
-        XX(read)\
-        XX(readv)\
-        XX(recv)\
-        XX(recvfrom)\
-        XX(recvmsg)\
-        XX(write)\
-        XX(send)\
-        XX(sendto)\
-        XX(sendmsg)\
-        XX(close)
-        
+#define HOOK_FUN(XX) \
+    XX(sleep)        \
+    XX(usleep)       \
+    XX(nanosleep)    \
+    XX(socket)       \
+    XX(connect)      \
+    XX(accept)       \
+    XX(fcntl)        \
+    XX(ioctl)        \
+    XX(getsockopt)   \
+    XX(setsockopt)   \
+    XX(read)         \
+    XX(readv)        \
+    XX(recv)         \
+    XX(recvfrom)     \
+    XX(recvmsg)      \
+    XX(write)        \
+    XX(writev)       \
+    XX(send)         \
+    XX(sendto)       \
+    XX(sendmsg)      \
+    XX(close)
 
     // 初始化hook
     void hook_init()
@@ -41,15 +44,16 @@ namespace sylar
         {
             return;
         }
-        // ## 表示连接前后两个字符组； # 则是字符描述
-        // dlsym 在系统动态库中找到 #name所代表的的函数地址并返回
-        // 下面语句中将返回类型强制转化为 (name ## _fun)， 并且复制给了 name ## _f
-        // void *dlsym(void *handle, const char *symbol);
-        #define XX(name) name ## _f = (name ## _fun)dlsym(RTLD_NEXT, #name);
-            HOOK_FUN(XX)
-        #undef XX
+// ## 表示连接前后两个字符组； # 则是字符描述
+// dlsym 在系统动态库中找到 #name所代表的的函数地址并返回
+// 下面语句中将返回类型强制转化为 (name ## _fun)， 并且复制给了 name ## _f
+// void *dlsym(void *handle, const char *symbol);
+#define XX(name) name##_f = (name##_fun)dlsym(RTLD_NEXT, #name);
+        HOOK_FUN(XX)
+#undef XX
     }
 
+    static uint64_t s_connect_timout = -1;
     //  需要 在main函数执行前，将需要替换的函数全都hook掉，那就只能根据编译顺序来操作
     struct _HookIniter
     {
@@ -58,9 +62,16 @@ namespace sylar
         {
             // 构造函数里面 包含了hook的初始化，
             hook_init();
+            s_connect_timout = g_tcp_connect_timeout->getValue();
+
+            g_tcp_connect_timeout->addListener([](const int &old_value, const int &new_value)
+                                               {
+                SYLAR_LOG_INFO(g_logger) << "tcp connect timeout changed from"
+                                         <<  old_value << " to " << new_value;
+                s_connect_timout = new_value; });
         }
     };
-    
+
     // 创建一个 静态的变量， 静态的变量在main函数加载之前被先初始化
     static _HookIniter s_hook_initer;
 
@@ -69,22 +80,21 @@ namespace sylar
     {
         return t_hook_enable;
     }
-    
+
     // 设置hook_enbale的状态
     void set_hook_enable(bool flag)
     {
         t_hook_enable = flag;
-
     }
 
     struct timer_info
     {
         int cancelled = 0;
     };
-    
-    template<typename OriginFun, typename ... Args>
-    static ssize_t do_io(int fd, OriginFun fun, const char* hook_fun_name,
-                        uint32_t event, int timeout_so, Args&&... args)
+
+    template <typename OriginFun, typename... Args>
+    static ssize_t do_io(int fd, OriginFun fun, const char *hook_fun_name,
+                         uint32_t event, int timeout_so, Args &&...args)
     {
         // 看看是否hook了
         if (!sylar::t_hook_enable)
@@ -115,26 +125,28 @@ namespace sylar
         uint64_t to = ctx->getTimeout(timeout_so);
         // 条件状态， 用于 conditionEvent
         std::shared_ptr<timer_info> tinfo(new timer_info);
-
     retry:
         ssize_t n = fun(fd, std::forward<Args>(args)...);
         // 如果n = -1,并且errno == EINTR，说明函数被中断异常退出
-        while(n == -1 && errno == EINTR)
+        while (n == -1 && errno == EINTR)
         {
             n = fun(fd, std::forward<Args>(args)...);
         }
+        // SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
         // 如果n = -1,并且errno == EAGAIN，说明fd被阻塞了
         if (n == -1 && errno == EAGAIN)
         {
-            sylar::IOManager* iom = sylar::IOManager::GetThis();
+            sylar::IOManager *iom = sylar::IOManager::GetThis();
             sylar::Timer::ptr timer;
-            // weak_ptr指针指向 timer_info类型的对象tinfo 
+            // weak_ptr指针指向 timer_info类型的对象tinfo
             std::weak_ptr<timer_info> winfo(tinfo);
             // to 来自于 ctx->getTimeout(timeout_so);
             if (to != (uint64_t)-1)
             {
                 // to 不等于-1，那么就说明有超时时间 (在超时时间内完成操作就不会被cancel)
-                timer = iom->addConditionTimer(to, [winfo, fd, iom, event](){
+                timer = iom->addConditionTimer(
+                    to, [winfo, fd, iom, event]()
+                    {
                     // lock 返回的是一个智能指针
                     auto t = winfo.lock();
                     // 如果t不存在并且t被取消了，那么就直接不执行这个函数
@@ -144,8 +156,8 @@ namespace sylar
                     }
                     t->cancelled = ETIMEDOUT;
                     // 把当前iomanager事件取消掉  --- 有triggerEvent来添加schedul
-                    iom->cancelEvent(fd, (sylar::IOManager::Event)event);
-                }, winfo);
+                    iom->cancelEvent(fd, (sylar::IOManager::Event)event); },
+                    winfo);
             }
             int c = 0;
             uint64_t now = 0;
@@ -157,8 +169,8 @@ namespace sylar
                 if (c)
                 {
                     SYLAR_LOG_ERROR(g_logger) << hook_fun_name << " addEvent("
-                        << fd << ", " << event << ") retry c=" << c
-                        << " used=" << (sylar::GetCurrentUS() - now);
+                                              << fd << ", " << event << ") retry c=" << c
+                                              << " used=" << (sylar::GetCurrentUS() - now);
                 }
                 // 如果timer此时没有超时，那么timer必定存在
                 if (timer)
@@ -169,8 +181,10 @@ namespace sylar
             }
             else
             {
+                SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
                 // event添加成功
                 sylar::Fiber::YieldToHold();
+                SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
                 // 如果fiber 被唤醒回来timer还存在的话，那就取消掉timer
                 if (timer)
                 {
@@ -193,9 +207,9 @@ namespace sylar
 
     extern "C"
     {
-        // 对HOOK_FUN里面的所有xx(name)宏 都要初始化 函数指针
-        #define XX(name) name ## _fun name ## _f = nullptr;
-            HOOK_FUN(XX)
+        // 对HOOK_FUN里面的所有xx(name)宏 都要初始化 函数指针定义
+        #define XX(name) name##_fun name##_f = nullptr;
+                HOOK_FUN(XX)
         #undef XX
 
         /*
@@ -203,115 +217,112 @@ namespace sylar
         */
         unsigned int sleep(unsigned int seconds)
         {
-                // 判断是否被hook了
-                if (!sylar::t_hook_enable)
-                {
-                    // 如果没有被hook，那么就要调用原始的函数
-                    return sleep_f(seconds);
-                }
-                sylar::Fiber::ptr fiber = sylar::Fiber::GetThis();
-                sylar::IOManager* iom = sylar::IOManager::GetThis();
-                iom->addTimer(seconds * 1000, std::bind((void(sylar::Scheduler::*)
-                    (sylar::Fiber::ptr, int thread))&sylar::IOManager::schedule
-                    , iom, fiber, -1));
+            // 判断是否被hook了
+            if (!sylar::t_hook_enable)
+            {
+                // 如果没有被hook，那么就要调用原始的函数
+                return sleep_f(seconds);
+            }
+            sylar::Fiber::ptr fiber = sylar::Fiber::GetThis();
+            sylar::IOManager *iom = sylar::IOManager::GetThis();
+            iom->addTimer(seconds * 1000, std::bind((void(sylar::Scheduler::*)(sylar::Fiber::ptr, int thread)) & sylar::IOManager::schedule, iom, fiber, -1));
 
-                sylar::Fiber::YieldToHold();
-                return 0;
+            sylar::Fiber::YieldToHold();
+            return 0;
         }
 
         int usleep(useconds_t usec)
         {
-                // 判断是否被hook了
-                if (!sylar::t_hook_enable)
-                {
-                    // 如果没有被hook，那么就要调用原始的函数
-                    return usleep_f(usec);
-                }
-                sylar::Fiber::ptr fiber = sylar::Fiber::GetThis();
-                sylar::IOManager* iom = sylar::IOManager::GetThis();
-                iom->addTimer(usec / 1000, std::bind((void(sylar::Scheduler::*)
-                    (sylar::Fiber::ptr, int thread))&sylar::IOManager::schedule, iom, fiber,-1));
-                sylar::Fiber::YieldToHold();
-                return 0;
+            // 判断是否被hook了
+            if (!sylar::t_hook_enable)
+            {
+                // 如果没有被hook，那么就要调用原始的函数
+                return usleep_f(usec);
+            }
+            sylar::Fiber::ptr fiber = sylar::Fiber::GetThis();
+            sylar::IOManager *iom = sylar::IOManager::GetThis();
+            iom->addTimer(usec / 1000, std::bind((void(sylar::Scheduler::*)(sylar::Fiber::ptr, int thread)) & sylar::IOManager::schedule, iom, fiber, -1));
+            sylar::Fiber::YieldToHold();
+            return 0;
         }
 
         int nanosleep(const struct timespec *req, struct timespec *rem)
         {
-                if (!sylar::t_hook_enable)
-                {
-                    return nanosleep_f(req, rem);
-                }
-                int timeout_ms = req->tv_sec * 1000 + req->tv_nsec / 1000 / 1000;
-                            sylar::Fiber::ptr fiber = sylar::Fiber::GetThis();
-                sylar::IOManager* iom = sylar::IOManager::GetThis();
-                iom->addTimer(timeout_ms, std::bind((void(sylar::Scheduler::*)
-                    (sylar::Fiber::ptr, int thread))&sylar::IOManager::schedule
-                    ,iom, fiber, -1));
-                sylar::Fiber::YieldToHold();
-                return 0;
+            if (!sylar::t_hook_enable)
+            {
+                return nanosleep_f(req, rem);
+            }
+            int timeout_ms = req->tv_sec * 1000 + req->tv_nsec / 1000 / 1000;
+            sylar::Fiber::ptr fiber = sylar::Fiber::GetThis();
+            sylar::IOManager *iom = sylar::IOManager::GetThis();
+            iom->addTimer(timeout_ms, std::bind((void(sylar::Scheduler::*)(sylar::Fiber::ptr, int thread)) & sylar::IOManager::schedule, iom, fiber, -1));
+            sylar::Fiber::YieldToHold();
+            return 0;
         }
-        
+
         int socket(int domain, int type, int protocol)
         {
-                if (!t_hook_enable)
-                {
-                    return socket_f(domain, type, protocol);
-                }
-                // 如果hook了，那也执行scoket_f，接下来执行额外的操作
-                int fd = socket_f(domain, type, protocol);
-                if (fd == -1)
-                {
-                    return fd;
-                }
-                // 得到fd，如果fd不在m_datas中，那就强制添加到m_datas中
-                sylar::FdMgr::GetInstance()->get(fd, true);
+            if (!t_hook_enable)
+            {
+                return socket_f(domain, type, protocol);
+            }
+            // 如果hook了，那也执行scoket_f，接下来执行额外的操作
+            int fd = socket_f(domain, type, protocol);
+            if (fd == -1)
+            {
                 return fd;
+            }
+            // 得到fd，如果fd不在m_datas中，那就强制添加到m_datas中
+            sylar::FdMgr::GetInstance()->get(fd, true);
+            return fd;
         }
-        
-        int connect_with_timeout(int sockfd, const struct sockaddr* addr, socklen_t addrlen, uint64_t timeout_ms)
+
+        int connect_with_timeout(int sockfd, const struct sockaddr *addr, socklen_t addrlen, uint64_t timeout_ms)
         {
-                if (!t_hook_enable)
-                {
-                    return connect_f(sockfd, addr, addrlen);
-                }
-                sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(sockfd);
-                // 如果ctx不存在或者ctx已经关闭了
-                if (!ctx || ctx->isClose())
-                {
-                    errno = EBADE;
-                    return -1;
-                }
-                // 如果ctx 不是socket的话
-                if (!ctx->isSocket())
-                {
-                    return connect_f(sockfd, addr, addrlen);
-                }
-                // 如果是用户已经设定了 O_NONBLOCK
-                if (ctx->getUserNonblock())
-                {
-                    return connect_f(sockfd, addr, addrlen);
-                }
+            if (!sylar::t_hook_enable)
+            {
+                return connect_f(sockfd, addr, addrlen);
+            }
+            sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(sockfd);
+            // 如果ctx不存在或者ctx已经关闭了
+            if (!ctx || ctx->isClose())
+            {
+                errno = EBADE;
+                return -1;
+            }
+            // 如果ctx 不是socket的话
+            if (!ctx->isSocket())
+            {
+                return connect_f(sockfd, addr, addrlen);
+            }
+            // 如果是用户已经设定了 O_NONBLOCK
+            if (ctx->getUserNonblock())
+            {
+                return connect_f(sockfd, addr, addrlen);
+            }
 
-                int n = connect_f(sockfd, addr, addrlen);
-                if (n == 0)
-                {
-                    return 0;
-                }
-                else if (n != -1 || errno != EINPROGRESS)
-                {
-                    return n;
-                }
-                // 加下来就是 n == -1 && errno == EINPROGRESS 的情况
-                sylar::IOManager* iom = sylar::IOManager::GetThis();
-                sylar::Timer::ptr timer;
-                // 设置条件定时器
-                std::shared_ptr<timer_info> tinfo(new timer_info);
-                std::weak_ptr<timer_info> winfo(tinfo);
+            int n = connect_f(sockfd, addr, addrlen);
+            if (n == 0)
+            {
+                return 0;
+            }
+            else if (n != -1 || errno != EINPROGRESS)
+            {
+                return n;
+            }
+            // 加下来就是 n == -1 && errno == EINPROGRESS 的情况
+            sylar::IOManager *iom = sylar::IOManager::GetThis();
+            sylar::Timer::ptr timer;
+            // 设置条件定时器
+            std::shared_ptr<timer_info> tinfo(new timer_info);
+            std::weak_ptr<timer_info> winfo(tinfo);
 
-                // 有超时时间
-                if (timeout_ms != (uint64_t)-1)
-                {
-                    timer = iom->addConditionTimer(timeout_ms, [winfo, sockfd, iom](){
+            // 有超时时间
+            if (timeout_ms != (uint64_t)-1)
+            {
+                timer = iom->addConditionTimer(
+                    timeout_ms, [winfo, sockfd, iom]()
+                    {
                         auto t = winfo.lock();
                         // 如果t不存在亦或者t的cancelled == true (意味着被取消了)
                         if (!t || t->cancelled)
@@ -320,76 +331,75 @@ namespace sylar
                         }
                         // 如果t存在，那么设置条件超时
                         t->cancelled = ETIMEDOUT;
-                        iom->cancelEvent(sockfd, sylar::IOManager::WRITE);
-                    }, winfo);        
-                }
-                int rt = iom->addEvent(sockfd, sylar::IOManager::WRITE);
-                if (rt == 0)
+                        iom->cancelEvent(sockfd, sylar::IOManager::WRITE);},
+                    winfo);
+            }
+            int rt = iom->addEvent(sockfd, sylar::IOManager::WRITE);
+            if (rt == 0)
+            {
+                sylar::Fiber::YieldToHold();
+                // 如果被唤醒的话 --
+                // timer还存在， 那么就取消定时器
+                if (timer)
                 {
-                    sylar::Fiber::YieldToHold();
-                    // 如果被唤醒的话 -- 
-                    // timer还存在， 那么就取消定时器
-                    if (timer)
-                    {
-                        timer->cancel();
-                    }
-                    // 如果tinfo条件被取消了
-                    if (tinfo->cancelled)
-                    {
-                        errno =tinfo->cancelled;
-                        return -1;
-                    } 
+                    timer->cancel();
                 }
-                else
+                // 如果tinfo条件被取消了
+                if (tinfo->cancelled)
                 {
-                    // 如果添加时间失败了
-                    // 还有定时器就取消定时器
-                    if (timer)
-                    {
-                        timer->cancel();
-                    }
-                    SYLAR_LOG_ERROR(g_logger) << "connnet addEvent(" << sockfd << ", WRITE) error";
-                }
-                int error = 0;
-                socklen_t len = sizeof(int);
-                // 看有没有error
-                if (-1 == getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &len))
-                {
+                    errno = tinfo->cancelled;
                     return -1;
                 }
-                // 如果没有错误
-                if (!error)
+            }
+            else
+            {
+                // 如果添加时间失败了
+                // 还有定时器就取消定时器
+                if (timer)
                 {
-                    return 0;
+                    timer->cancel();
                 }
-                else
-                {
-                    // 有错误
-                    errno = error;
-                    return -1;
-                }
+                SYLAR_LOG_ERROR(g_logger) << "connnet addEvent(" << sockfd << ", WRITE) error";
+            }
+            int error = 0;
+            socklen_t len = sizeof(int);
+            // 看有没有error
+            if (-1 == getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &len))
+            {
+                return -1;
+            }
+            // 如果没有错误
+            if (!error)
+            {
+                return 0;
+            }
+            else
+            {
+                // 有错误
+                errno = error;
+                return -1;
+            }
         }
 
-        int connect(int sockfd, const struct sockaddr *addr,socklen_t addrlen)
+        int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
         {
 
-                return connect_f(sockfd, addr, addrlen);
+            return connect_with_timeout(sockfd, addr, addrlen, sylar::s_connect_timout);
         }
-        
+
         int accept(int sockfd, struct sockaddr *addr, socklen_t *addrlen)
         {
-                if (!t_hook_enable)
-                {
-                    return accept_f(sockfd, addr, addrlen);
-                }
+            if (!t_hook_enable)
+            {
+                return accept_f(sockfd, addr, addrlen);
+            }
 
-                int fd = do_io(sockfd, accept_f, "accept", sylar::IOManager::READ
-                            , SO_RCVTIMEO, addr, addrlen);
-                if (fd >= 0)
-                {
-                    sylar::FdMgr::GetInstance()->get(fd, true);
-                }
-                return fd;
+            int fd = do_io(sockfd, accept_f, "accept", sylar::IOManager::READ, SO_RCVTIMEO, addr, addrlen);
+            if (fd >= 0)
+            {
+                sylar::FdMgr::GetInstance()->get(fd, true);
+            }
+            return fd;
         }
 
         ssize_t read(int fd, void *buf, size_t count)
@@ -408,7 +418,7 @@ namespace sylar
         }
 
         ssize_t recvfrom(int sockfd, void *buf, size_t len, int flags,
-                            struct sockaddr *src_addr, socklen_t *addrlen)
+                         struct sockaddr *src_addr, socklen_t *addrlen)
         {
             return do_io(sockfd, recvfrom_f, "recvfrom", sylar::IOManager::READ, SO_RCVTIMEO, buf, len, flags, src_addr, addrlen);
         }
@@ -432,9 +442,9 @@ namespace sylar
         {
             return do_io(sockfd, send_f, "send", sylar::IOManager::WRITE, SO_SNDTIMEO, buf, len, flags);
         }
-        
+
         ssize_t sendto(int sockfd, const void *buf, size_t len, int flags,
-                        const struct sockaddr *dest_addr, socklen_t addrlen)
+                       const struct sockaddr *dest_addr, socklen_t addrlen)
         {
             return do_io(sockfd, sendto_f, "sendto", sylar::IOManager::WRITE, SO_SNDTIMEO, buf, len, flags, dest_addr, addrlen);
         }
@@ -465,110 +475,109 @@ namespace sylar
             }
             return close_f(fd);
         }
-        
-        int fcntl(int fd, int cmd, ... /* arg */ )
+
+        int fcntl(int fd, int cmd, ... /* arg */)
         {
             va_list va;
-            //可以获取可变参数(...)参数列表中的第一个参数的地址并由va_list类型返回
-            // va -> ...
+            // 可以获取可变参数(...)参数列表中的第一个参数的地址并由va_list类型返回
+            //  va -> ...
             va_start(va, cmd);
-            switch(cmd)
+            switch (cmd)
             {
-                // int类型的 --- cmd类型代表了后续参数的类型
-                case F_SETFL:
-                    {
-                        int arg = va_arg(va, int);
-                        va_end(va);
-                        // FdManager类型的指针调用get返回了fdctx类型的指针
-                        sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
-                        // 如果ctx不存在或者ctx存在但是fd已经被关闭了
-                        if (!ctx || ctx->isClose() || !ctx->isSocket())
-                        {
-                            return fcntl_f(fd, cmd, arg);
-                        }
+            // int类型的 --- cmd类型代表了后续参数的类型
+            case F_SETFL:
+            {
+                int arg = va_arg(va, int);
+                va_end(va);
+                // FdManager类型的指针调用get返回了fdctx类型的指针
+                sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
+                // 如果ctx不存在或者ctx存在但是fd已经被关闭了
+                if (!ctx || ctx->isClose() || !ctx->isSocket())
+                {
+                    return fcntl_f(fd, cmd, arg);
+                }
 
-                        ctx->setUserNonblock(arg & O_NONBLOCK);
-                        if (ctx->getSysNonblock())
-                        {
-                            // 如果是系统设置的nonblock,那就添加上非阻塞
-                            arg |= O_NONBLOCK;
-                        }
-                        else
-                        {
-                            // 如果不是, 那就删除掉非阻塞
-                            arg &= ~O_NONBLOCK;
-                        }
-                        return fcntl_f(fd, cmd ,arg);
-                    }
-                case F_GETFL:
-                    {
-                        va_end(va);
-                        int arg = fcntl_f(fd, cmd);
-                        sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
-                        if (!ctx || ctx->isClose() || !ctx->isSocket()) 
-                        {
-                            return arg;
-                        }
-                        if (ctx->getUserNonblock()) 
-                        {
-                            return arg | O_NONBLOCK;
-                        } else 
-                        {
-                            return arg & ~O_NONBLOCK;
-                        }
-                    }
-                    break;
-                case F_DUPFD_CLOEXEC:
-                case F_SETFD:
-                case F_DUPFD:
-                case F_SETOWN:
-                case F_SETSIG:
-                case F_SETLEASE:
-                case F_NOTIFY:
-                case F_SETPIPE_SZ:
-                    {
-                        // 获取可变参数的当前参数，返回指定类型并将指针指向下一参数
-                        int arg = va_arg(va, int);
-                        // 清空va_list 可变参数列表
-                        va_end(va); 
-                        return fcntl_f(fd, cmd, arg);
-                    }
-                    break;
-                // void类型的 --- cmd类型代表了后续参数的类型
-                case F_GETFD:
-                case F_GETOWN:
-                case F_GETSIG:
-                case F_GETLEASE:
-                case F_GETPIPE_SZ:
-                    {
-                        va_end(va);
-                        return fcntl_f(fd, cmd);
-                    }
-                    break;
-                // struct (flock)类型的 --- cmd类型代表了后续参数的类型
-                case F_SETLK:
-                case F_SETLKW:
-                case F_GETLK:
-                    {
-                        struct flock* arg = va_arg(va, struct flock*);
-                        va_end(va);
-                        return fcntl_f(fd, cmd, arg);
-                    }
-                    break;
-                // struct (f_owner_exlock)类型的 --- cmd类型代表了后续参数的类型
-                case F_GETOWN_EX:
-                case F_SETOWN_EX:
-                    {
-                        struct f_owner_ex* arg = va_arg(va, struct f_owner_ex*);
-                        va_end(va);
-                        return fcntl_f(fd, cmd, arg);
-                    }
-                    break;
-                default:
-                    va_end(va);
-                    return fcntl_f(fd, cmd);
-
-
+                ctx->setUserNonblock(arg & O_NONBLOCK);
+                if (ctx->getSysNonblock())
+                {
+                    // 如果是系统设置的nonblock,那就添加上非阻塞
+                    arg |= O_NONBLOCK;
+                }
+                else
+                {
+                    // 如果不是, 那就删除掉非阻塞
+                    arg &= ~O_NONBLOCK;
+                }
+                return fcntl_f(fd, cmd, arg);
+            }
+            case F_GETFL:
+            {
+                va_end(va);
+                int arg = fcntl_f(fd, cmd);
+                sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(fd);
+                if (!ctx || ctx->isClose() || !ctx->isSocket())
+                {
+                    return arg;
+                }
+                if (ctx->getUserNonblock())
+                {
+                    return arg | O_NONBLOCK;
+                }
+                else
+                {
+                    return arg & ~O_NONBLOCK;
+                }
+            }
+            break;
+            case F_DUPFD:
+            case F_DUPFD_CLOEXEC:
+            case F_SETFD:
+            case F_SETOWN:
+            case F_SETSIG:
+            case F_SETLEASE:
+            case F_NOTIFY:
+            case F_SETPIPE_SZ:
+            {
+                // 获取可变参数的当前参数，返回指定类型并将指针指向下一参数
+                int arg = va_arg(va, int);
+                // 清空va_list 可变参数列表
+                va_end(va);
+                return fcntl_f(fd, cmd, arg);
+            }
+            break;
+            // void类型的 --- cmd类型代表了后续参数的类型
+            case F_GETFD:
+            case F_GETOWN:
+            case F_GETSIG:
+            case F_GETLEASE:
+            case F_GETPIPE_SZ:
+            {
+                va_end(va);
+                return fcntl_f(fd, cmd);
+            }
+            break;
+            // struct (flock)类型的 --- cmd类型代表了后续参数的类型
+            case F_SETLK:
+            case F_SETLKW:
+            case F_GETLK:
+            {
+                struct flock *arg = va_arg(va, struct flock *);
+                va_end(va);
+                return fcntl_f(fd, cmd, arg);
+            }
+            break;
+            // struct (f_owner_exlock)类型的 --- cmd类型代表了后续参数的类型
+            case F_GETOWN_EX:
+            case F_SETOWN_EX:
+            {
+                struct f_owner_ex *arg = va_arg(va, struct f_owner_ex *);
+                va_end(va);
+                return fcntl_f(fd, cmd, arg);
+            }
+            break;
+            default:
+                va_end(va);
+                return fcntl_f(fd, cmd);
             }
         }
 
@@ -576,7 +585,7 @@ namespace sylar
         {
             va_list va;
             va_start(va, request);
-            void* arg = va_arg(va, void*);
+            void *arg = va_arg(va, void *);
             va_end(va);
 
             if (FIONBIO == request)
@@ -592,15 +601,15 @@ namespace sylar
             }
             return ioctl_f(fd, request, arg);
         }
-        
+
         int getsockopt(int sockfd, int level, int optname,
-                        void *optval, socklen_t *optlen)
+                       void *optval, socklen_t *optlen)
         {
-            return getsockopt_f(sockfd,level, optname, optval, optlen);
+            return getsockopt_f(sockfd, level, optname, optval, optlen);
         }
-        
+
         int setsockopt(int sockfd, int level, int optname,
-                        const void *optval, socklen_t optlen)
+                       const void *optval, socklen_t optlen)
         {
             if (!sylar::t_hook_enable)
             {
@@ -614,14 +623,12 @@ namespace sylar
                     sylar::FdCtx::ptr ctx = sylar::FdMgr::GetInstance()->get(sockfd);
                     if (ctx)
                     {
-                        const timeval* tv = (const timeval*)optval;
+                        const timeval *tv = (const timeval *)optval;
                         ctx->setTimeout(optname, tv->tv_sec * 1000 + tv->tv_usec / 1000);
                     }
                 }
-                return setsockopt_f(sockfd, level, optname, optval, optlen);
             }
+            return setsockopt_f(sockfd, level, optname, optval, optlen);
         }
-
     }
 }
-

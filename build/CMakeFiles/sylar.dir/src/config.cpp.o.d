@@ -778,5 +778,6 @@ CMakeFiles/sylar.dir/src/config.cpp.o: \
  /usr/include/c++/11/thread /usr/include/c++/11/bits/std_thread.h \
  /usr/include/c++/11/bits/this_thread_sleep.h /usr/include/c++/11/chrono \
  /usr/include/c++/11/ratio /usr/include/c++/11/bits/parse_numbers.h \
+ /home/zhaoyangfan/LinuxStudio/server/sylar/include/noncopyable.h \
  /usr/include/semaphore.h /usr/include/x86_64-linux-gnu/bits/semaphore.h \
  /usr/include/c++/11/iostream

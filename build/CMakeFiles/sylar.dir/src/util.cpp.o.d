@@ -196,6 +196,7 @@ CMakeFiles/sylar.dir/src/util.cpp.o: \
  /usr/include/c++/11/ratio /usr/include/c++/11/limits \
  /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h \
  /usr/include/c++/11/functional /usr/include/c++/11/bits/std_function.h \
+ /home/zhaoyangfan/LinuxStudio/server/sylar/include/noncopyable.h \
  /usr/include/c++/11/atomic /usr/include/semaphore.h \
  /usr/include/x86_64-linux-gnu/bits/semaphore.h \
  /home/zhaoyangfan/LinuxStudio/server/sylar/include/fiber.h \

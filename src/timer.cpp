@@ -253,7 +253,7 @@ namespace sylar
             }
         }
 
-        RWMutexType::WriteLock lock(m_mutex);
+        RWMutexType::WriteLock lock2(m_mutex);
         if (m_timers.empty())
         {
             return;

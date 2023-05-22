@@ -164,7 +164,7 @@ namespace sylar
         epoll_event epevent;
         epevent.events = EPOLLET | fd_ctx->events | event;
         epevent.data.ptr = fd_ctx;
-        epevent.data.fd = fd;
+        // epevent.data.fd = fd;
 
         int rt = epoll_ctl(m_epfd, op, fd, &epevent);
         if (rt)
@@ -433,7 +433,6 @@ namespace sylar
                         ;
                     continue;
                 }
-
                 // void* 类型的指针转化为其他类型 需要强制转化
                 FdContext *fd_ctx = (FdContext *)event.data.ptr;
                 FdContext::MutexType::Lock lock(fd_ctx->mutex);
@@ -441,7 +440,7 @@ namespace sylar
                 {
                     event.events |= (EPOLLIN | EPOLLOUT) & fd_ctx->events;
                 }
-
+                
                 int real_events = NONE;
                 // 如果event.events 是IN，那么就要READ,因为是&操作，不都为1就为0
                 if (event.events & EPOLLIN)
@@ -470,7 +469,6 @@ namespace sylar
                                               << rt2 << " (" << errno << ") (" << strerror(errno) << ")";
                     continue;
                 }
-
                 if (real_events & READ)
                 {
                     // 触发读事件
@@ -483,6 +481,7 @@ namespace sylar
                     fd_ctx->triggerEvent(WRITE);
                     --m_pendingEventCount;
                 }
+
             }
             Fiber::ptr cur = Fiber::GetThis();
             auto raw_cur = cur.get();

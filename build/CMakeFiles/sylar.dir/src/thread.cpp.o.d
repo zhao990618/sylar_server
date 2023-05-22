@@ -150,8 +150,10 @@ CMakeFiles/sylar.dir/src/thread.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
  /usr/include/c++/11/bits/charconv.h \
- /usr/include/c++/11/bits/basic_string.tcc /usr/include/c++/11/atomic \
- /usr/include/semaphore.h /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+ /usr/include/c++/11/bits/basic_string.tcc \
+ /home/zhaoyangfan/LinuxStudio/server/sylar/include/noncopyable.h \
+ /usr/include/c++/11/atomic /usr/include/semaphore.h \
+ /usr/include/x86_64-linux-gnu/bits/semaphore.h \
  /home/zhaoyangfan/LinuxStudio/server/sylar/include/log.h \
  /usr/include/c++/11/list /usr/include/c++/11/bits/stl_list.h \
  /usr/include/c++/11/bits/list.tcc /usr/include/c++/11/sstream \

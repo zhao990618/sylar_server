@@ -10,6 +10,7 @@
 #include <string>
 #include <pthread.h>
 // #include "mutex.h"
+#include "noncopyable.h"
 #include <atomic>
 #include <stdint.h>
 #include <semaphore.h>
@@ -18,7 +19,7 @@
 namespace sylar
 {
 
-    class Semaphore
+    class Semaphore : Noncopyable
     {
     public:
         // 因为 count 为0,说明当前只能有1个线程使用信号量
@@ -27,11 +28,6 @@ namespace sylar
         void wait();
         void notify();
         // sem_t getSemaphore() const {return m_semaphore;}
-
-    private:
-        Semaphore(const Semaphore &) = delete;
-        Semaphore(const Semaphore &&) = delete;
-        Semaphore &operator=(const Semaphore &) = delete;
 
     private:
         int ret;
@@ -156,7 +152,7 @@ namespace sylar
         bool m_locked;
     };
 
-    class Mutex
+    class Mutex : Noncopyable
     {
         public:
             typedef ScopedLockImpl<Mutex> Lock;
@@ -185,7 +181,7 @@ namespace sylar
             pthread_mutex_t m_mutex;
     };
 
-    class SpinLock
+    class SpinLock : Noncopyable
     {
         public:
             typedef ScopedLockImpl<SpinLock> Lock;
@@ -212,41 +208,9 @@ namespace sylar
             pthread_spinlock_t m_mutex;
     };
 
-    
-
-#if 0
-    class NullMutex
-    {
-        public:
-            typedef ScopedLockImpl<NullMutex> Lock;
-            NullMutex(){}
-            ~NullMutex(){}
-            void lock() {}
-            void unlock(){}
-        private:
-            pthread_mutex_t m_mutex;
-    };
-
-        class NullRWMutex
-    {   
-        public:
-            typedef ReadScopedLockImpl<NullRWMutex> ReadLock;
-            typedef WriteScopedLockImpl<NullRWMutex> WriteLock;
-            NullRWMutex(){}
-            ~NullRWMutex(){}
-            // 读锁
-            void rdlock(){}
-            // 写锁
-            void wrlock(){}
-            // 解锁
-            void unlock(){}
-        private:
-            pthread_rwlock_t m_lock;
-    };
-#endif
 
     // 读写锁
-    class RWMutex
+    class RWMutex : Noncopyable
     {   
         public:
             typedef ReadScopedLockImpl<RWMutex> ReadLock;

@@ -14,20 +14,12 @@ namespace sylar
 {
 
     FdCtx::FdCtx(int fd)
-        :m_isInit(false)
-        ,m_isSocket(false)
-        ,m_sysNonblock(false)
-        ,m_userNonblock(false)
-        ,m_isClosed(false)
-        ,m_fd(fd)
-        ,m_recvTimeout(-1)
-        ,m_sendTimeout(-1)
+        : m_isInit(false), m_isSocket(false), m_sysNonblock(false), m_userNonblock(false), m_isClosed(false), m_fd(fd), m_recvTimeout(-1), m_sendTimeout(-1)
     {
         init();
     }
     FdCtx::~FdCtx()
     {
-
     }
 
     bool FdCtx::init()
@@ -64,10 +56,10 @@ namespace sylar
             /*
                 判断flags与O_NONBLOCK是否一样，
                 如果一样就是阻塞，不一样就进入if并且修改状态为O_NONBLOCK
-            */ 
+            */
             if (!(flags & O_NONBLOCK))
             {
-                fcntl(m_fd, F_SETFD, flags | O_NONBLOCK);
+                fcntl_f(m_fd, F_SETFL, flags | O_NONBLOCK);
             }
             m_sysNonblock = true;
         }
@@ -91,7 +83,6 @@ namespace sylar
         {
             m_sendTimeout = v;
         }
-
     }
     uint64_t FdCtx::getTimeout(int type)
     {
@@ -109,21 +100,25 @@ namespace sylar
     {
         m_datas.resize(64);
     }
-    
+
     FdCtx::ptr FdManager::get(int fd, bool auto_create)
     {
+        if (fd == -1)
+        {
+            return nullptr;
+        }
         RWMutexType::ReadLock lock(m_mutex);
         // 说明fd不在m_datas 的范围内 m_datas.resize(64)
-        if ((int)m_datas.size() < fd)
+        if ((int)m_datas.size() <= fd)
         {
             // 不需要自动创建FdCtx
-            if(!auto_create)
+            if (auto_create == false)
             {
                 return nullptr;
             }
         }
         else
-        {   // 说明fd在m_datas 的范围内 m_datas.resize(64);并且不需要创建FdCtx
+        { // 说明fd在m_datas 的范围内 m_datas.resize(64);并且不需要创建FdCtx
             if (m_datas[fd] || !auto_create)
             {
                 return m_datas[fd];
@@ -134,6 +129,10 @@ namespace sylar
 
         RWMutexType::WriteLock lock2(m_mutex);
         FdCtx::ptr ctx(new FdCtx(fd));
+        if (fd >= (int)m_datas.size())
+        {
+            m_datas.resize(fd * 1.5);
+        }
         m_datas[fd] = ctx;
         return ctx;
     }
@@ -141,7 +140,7 @@ namespace sylar
     {
         RWMutexType::WriteLock lock(m_mutex);
         // 即fd已经不存在于 m_datas中
-        if ((int)m_datas.size() < fd)
+        if ((int)m_datas.size() <= fd)
         {
             return;
         }

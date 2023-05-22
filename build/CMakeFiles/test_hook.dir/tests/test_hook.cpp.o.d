@@ -230,8 +230,10 @@ CMakeFiles/test_hook.dir/tests/test_hook.cpp.o: \
  /usr/include/c++/11/ratio /usr/include/c++/11/limits \
  /usr/include/c++/11/ctime /usr/include/c++/11/bits/parse_numbers.h \
  /usr/include/c++/11/functional /usr/include/c++/11/bits/std_function.h \
+ /home/zhaoyangfan/LinuxStudio/server/sylar/include/noncopyable.h \
  /usr/include/c++/11/atomic /usr/include/semaphore.h \
- /usr/include/x86_64-linux-gnu/bits/semaphore.h \
+ /usr/include/x86_64-linux-gnu/bits/semaphore.h /usr/include/string.h \
+ /usr/include/strings.h \
  /home/zhaoyangfan/LinuxStudio/server/sylar/include/iomanager.h \
  /home/zhaoyangfan/LinuxStudio/server/sylar/include/scheduler.h \
  /home/zhaoyangfan/LinuxStudio/server/sylar/include/fiber.h \
@@ -241,4 +243,7 @@ CMakeFiles/test_hook.dir/tests/test_hook.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/stack_t.h \
  /home/zhaoyangfan/LinuxStudio/server/sylar/include/timer.h \
  /usr/include/c++/11/set /usr/include/c++/11/bits/stl_set.h \
- /usr/include/c++/11/bits/stl_multiset.h
+ /usr/include/c++/11/bits/stl_multiset.h /usr/include/netinet/in.h \
+ /usr/include/x86_64-linux-gnu/bits/in.h /usr/include/arpa/inet.h \
+ /usr/include/x86_64-linux-gnu/sys/epoll.h \
+ /usr/include/x86_64-linux-gnu/bits/epoll.h /usr/include/c++/11/iostream
