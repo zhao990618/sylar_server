@@ -1,5 +1,5 @@
-#ifndef __SYLAR_NONCOPYABLE_H_
-#define __SYLAR_NONCOPYABLE_H_
+#ifndef __SYLAR_NONCOPYABLE_H__
+#define __SYLAR_NONCOPYABLE_H__
 
 namespace sylar
 {
