@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef __TIMER_H__
-#define __TIMER_H__
+#ifndef __SYLAR_TIMER_H__
+#define __SYLAR_TIMER_H__
 
 #include <memory>
 #include <thread.h>

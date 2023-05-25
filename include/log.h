@@ -1,7 +1,7 @@
 #pragma once
 /* 日志系统 */
-#ifndef _SYLAR_LOG_H_
-#define _STLAR_LOG_H_
+#ifndef __SYLAR_LOG_H__
+#define __STLAR_LOG_H__
 #include <string>
 #include <stdint.h>
 #include <memory>

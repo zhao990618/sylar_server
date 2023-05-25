@@ -1,21 +1,24 @@
 #ifndef __SYLAR_ADDRESS_H__
 #define __SYLAR_ADDRESS_H__
-
-#include <memory>
-#include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/un.h>
+#include <memory>
+#include <string>
 #include <netinet/in.h>
 #include <iostream>
+#include <sstream>
 
 namespace sylar
 {
     class Address
     {
         public:
-
             typedef std::shared_ptr<Address> ptr;
+
+            // 域名转化地址
+            static Address::ptr Create(const sockaddr* addr, socklen_t addrlen);
+
             virtual ~Address() {};
             // 得到协议
             int geFamily() const;
@@ -37,14 +40,16 @@ namespace sylar
         public:
             typedef std::shared_ptr<IPAddress> ptr;
             
+            static IPAddress::ptr Create(const char* address, uint32_t port = 0);
+
             // 拿到广播地址
             virtual IPAddress::ptr broadcastAddress(uint32_t prefix_len) = 0;
             // 网络地址
             virtual IPAddress::ptr networkAddress(uint32_t prefix_len) = 0;
             // 子网掩码
-            virtual IPAddress::ptr subnetAddress(uint32_t prefix_len) = 0;
+            virtual IPAddress::ptr subnetMask(uint32_t prefix_len) = 0;
             // 得到端口号
-            virtual int32_t getPort() const = 0;
+            virtual uint32_t getPort() const = 0;
             // 设置端口号
             virtual void setPort(uint32_t v) = 0; 
     };
@@ -53,7 +58,9 @@ namespace sylar
     {
         public:
             typedef std::shared_ptr<IPv4Address> ptr;
-
+            // 将文本型的地址转化为 address(IPv4)
+            static IPv4Address::ptr Create(const char* address, uint32_t port = 0);
+            IPv4Address(const sockaddr_in& address);
             IPv4Address(uint32_t address = INADDR_ANY, uint32_t port = 0);
             const sockaddr* getAddr() const override;
             socklen_t getAddrLen() const override;
@@ -63,9 +70,9 @@ namespace sylar
             // 网络地址
             IPAddress::ptr networkAddress(uint32_t prefix_len) override;
             // 子网掩码
-            IPAddress::ptr subnetAddress(uint32_t prefix_len) override;
+            IPAddress::ptr subnetMask(uint32_t prefix_len) override;
             // 得到端口号
-            int32_t getPort() const override;
+            uint32_t getPort() const override;
             // 设置端口号
             void setPort(uint32_t v) override;
         private:
@@ -76,8 +83,10 @@ namespace sylar
     {
         public:
             typedef std::shared_ptr<IPv6Address> ptr;
-
-            IPv6Address(uint32_t address = INADDR_ANY, uint32_t port = 0);
+            static IPv6Address::ptr Create(const char* address, uint32_t port = 0);
+            IPv6Address();
+            IPv6Address(const sockaddr_in6& addr);
+            IPv6Address(const uint8_t address[16], uint32_t port);
             const sockaddr* getAddr() const override;
             socklen_t getAddrLen() const override;
             std::ostream& insert(std::ostream& os) const override;
@@ -86,9 +95,9 @@ namespace sylar
             // 网络地址
             IPAddress::ptr networkAddress(uint32_t prefix_len) override;
             // 子网掩码
-            IPAddress::ptr subnetAddress(uint32_t prefix_len) override;
+            IPAddress::ptr subnetMask(uint32_t prefix_len) override;
             // 得到端口号
-            int32_t getPort() const override;
+            uint32_t getPort() const override;
             // 设置端口号
             void setPort(uint32_t v) override;
         private:
@@ -99,6 +108,7 @@ namespace sylar
     {
         public:
             typedef std::shared_ptr<UnixAddress> ptr;
+            UnixAddress();
             UnixAddress(const std::string& path);
 
             const sockaddr* getAddr() const override;
@@ -114,14 +124,15 @@ namespace sylar
     {
         public:
             typedef std::shared_ptr<UnknowAddress> ptr;
-            UnknowAddress(const std::string& path);
+            UnknowAddress(int family);
+            UnknowAddress(const sockaddr& addr);
 
             const sockaddr* getAddr() const override;
             socklen_t getAddrLen() const override;
             std::ostream& insert(std::ostream& os) const override;
 
         private:
-            struct sockaddr_un m_addr;       
+            struct sockaddr m_addr;       
     };
 }
 

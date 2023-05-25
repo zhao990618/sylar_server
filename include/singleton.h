@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __SYLAR_SINGLETON_H_
-#define __SYLAR_SINGLETON_H_
+#ifndef __SYLAR_SINGLETON_H__
+#define __SYLAR_SINGLETON_H__
 #include <memory>
 
 

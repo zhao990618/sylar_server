@@ -2,8 +2,8 @@
 
 /* 配置系统*/
 
-#ifndef __SYLAR_CONFIG_H_
-#define __SYLAR_CONFIG_H_
+#ifndef __SYLAR_CONFIG_H__
+#define __SYLAR_CONFIG_H__
 
 #include <memory>
 #include <sstream>

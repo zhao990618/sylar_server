@@ -6,5 +6,5 @@ CXX_DEFINES = -Dsylar_EXPORTS
 
 CXX_INCLUDES = -I/home/zhaoyangfan/LinuxStudio/server/sylar/include
 
-CXX_FLAGS =  -rdynamic -O0 -g -std=c++11 -Wno-deprecated -Wno-unused-function -g -fPIC
+CXX_FLAGS =  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC
 

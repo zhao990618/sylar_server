@@ -13,9 +13,9 @@ namespace sylar
     bool is_hook_enable();
     void set_hook_enable(bool flag);    
 }
-
-extern "C"
-{
+#ifdef __cplusplus
+extern "C"{
+#endif
     /*sleep*/ 
     typedef unsigned int (*sleep_fun)(unsigned int seconds);
     extern sleep_fun sleep_f;
@@ -88,7 +88,9 @@ extern "C"
     /*close*/
     typedef int (*close_fun)(int fd);
     extern close_fun close_f;
-}
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif

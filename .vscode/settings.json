@@ -64,7 +64,8 @@
         "unordered_set": "cpp",
         "condition_variable": "cpp",
         "mutex": "cpp",
-        "cfenv": "cpp"
+        "cfenv": "cpp",
+        "ios": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

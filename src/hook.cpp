@@ -205,8 +205,10 @@ namespace sylar
         return n;
     }
 
-    extern "C"
-    {
+    #ifdef __cplusplus
+    extern "C"{
+    #endif
+
         // 对HOOK_FUN里面的所有xx(name)宏 都要初始化 函数指针定义
         #define XX(name) name##_fun name##_f = nullptr;
                 HOOK_FUN(XX)
@@ -630,5 +632,7 @@ namespace sylar
             }
             return setsockopt_f(sockfd, level, optname, optval, optlen);
         }
+    #ifdef __cplusplus
     }
+    #endif
 }
