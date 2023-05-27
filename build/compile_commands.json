@@ -93,5 +93,10 @@
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_hook.dir/tests/test_hook.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_hook.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_hook.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_address.dir/tests/test_address.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_address.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_address.cpp"
 }
 ]

@@ -236,6 +236,19 @@ test_hook/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_hook.dir/build.make CMakeFiles/test_hook.dir/build
 .PHONY : test_hook/fast
 
+#=============================================================================
+# Target rules for targets named test_address
+
+# Build rule for target.
+test_address: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_address
+.PHONY : test_address
+
+# fast build rule for target.
+test_address/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_address.dir/build.make CMakeFiles/test_address.dir/build
+.PHONY : test_address/fast
+
 src/address.o: src/address.cpp.o
 .PHONY : src/address.o
 
@@ -524,6 +537,30 @@ tests/test.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main_test.dir/build.make CMakeFiles/main_test.dir/tests/test.cpp.s
 .PHONY : tests/test.cpp.s
 
+tests/test_address.o: tests/test_address.cpp.o
+.PHONY : tests/test_address.o
+
+# target to build an object file
+tests/test_address.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_address.dir/build.make CMakeFiles/test_address.dir/tests/test_address.cpp.o
+.PHONY : tests/test_address.cpp.o
+
+tests/test_address.i: tests/test_address.cpp.i
+.PHONY : tests/test_address.i
+
+# target to preprocess a source file
+tests/test_address.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_address.dir/build.make CMakeFiles/test_address.dir/tests/test_address.cpp.i
+.PHONY : tests/test_address.cpp.i
+
+tests/test_address.s: tests/test_address.cpp.s
+.PHONY : tests/test_address.s
+
+# target to generate assembly for a file
+tests/test_address.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_address.dir/build.make CMakeFiles/test_address.dir/tests/test_address.cpp.s
+.PHONY : tests/test_address.cpp.s
+
 tests/test_config.o: tests/test_config.cpp.o
 .PHONY : tests/test_config.o
 
@@ -702,6 +739,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... main_test"
 	@echo "... sylar"
+	@echo "... test_address"
 	@echo "... test_config"
 	@echo "... test_fiber"
 	@echo "... test_hook"
@@ -745,6 +783,9 @@ help:
 	@echo "... tests/test.o"
 	@echo "... tests/test.i"
 	@echo "... tests/test.s"
+	@echo "... tests/test_address.o"
+	@echo "... tests/test_address.i"
+	@echo "... tests/test_address.s"
 	@echo "... tests/test_config.o"
 	@echo "... tests/test_config.i"
 	@echo "... tests/test_config.s"

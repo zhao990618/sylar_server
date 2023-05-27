@@ -1,0 +1,1 @@
+/usr/bin/g++  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -rdynamic CMakeFiles/test_addre.dir/tests/test_hook.cpp.o -o ../bin/test_addre   -L/usr/local/lib 
