@@ -1,10 +1,12 @@
-#include "config.h"
+
 #include "hook.h"
+#include <dlfcn.h>
+#include "config.h"
 #include "log.h"
 #include "fiber.h"
 #include "iomanager.h"
 #include "fd_manager.h"
-#include <dlfcn.h>
+#include "macro.h"
 
 sylar::Logger::ptr g_logger = SYLAR_LOG_NAME("system");
 namespace sylar
@@ -205,9 +207,7 @@ namespace sylar
         return n;
     }
 
-    #ifdef __cplusplus
     extern "C"{
-    #endif
 
         // 对HOOK_FUN里面的所有xx(name)宏 都要初始化 函数指针定义
         #define XX(name) name##_fun name##_f = nullptr;
@@ -279,7 +279,7 @@ namespace sylar
             return fd;
         }
 
-        int connect_with_timeout(int sockfd, const struct sockaddr *addr, socklen_t addrlen, uint64_t timeout_ms)
+        int connect_with_timeout(int sockfd, const struct sockaddr* addr, socklen_t addrlen, uint64_t timeout_ms)
         {
             if (!sylar::t_hook_enable)
             {
@@ -632,7 +632,6 @@ namespace sylar
             }
             return setsockopt_f(sockfd, level, optname, optval, optlen);
         }
-    #ifdef __cplusplus
     }
-    #endif
+
 }

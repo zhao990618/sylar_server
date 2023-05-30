@@ -591,6 +591,10 @@ namespace sylar
         m_length += offsetof(sockaddr_un, sun_path);
 
     }
+
+    void UnixAddress::setAddrLen(uint32_t v) {
+        m_length = v;
+    }
     
     sockaddr* UnixAddress::getAddr() {
         return (sockaddr*)&m_addr;
@@ -606,6 +610,17 @@ namespace sylar
         return m_length;
     }
 
+    std::string UnixAddress::getPath() const {
+        std::stringstream ss;
+        if(m_length > offsetof(sockaddr_un, sun_path)
+                && m_addr.sun_path[0] == '\0') {
+            ss << "\\0" << std::string(m_addr.sun_path + 1,
+                    m_length - offsetof(sockaddr_un, sun_path) - 1);
+        } else {
+            ss << m_addr.sun_path;
+        }
+        return ss.str();
+    }
     std::ostream& UnixAddress::insert(std::ostream& os) const 
     {
         if (m_length > offsetof(sockaddr_un, sun_path) && m_addr.sun_path[0] == '\0')

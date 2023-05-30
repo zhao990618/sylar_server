@@ -29,6 +29,7 @@ set(LIB_SRC
     src/hook.cpp
     src/iomanager.cpp
     src/log.cpp  
+    src/socket.cpp
     src/scheduler.cpp 
     src/thread.cpp
     src/util.cpp
@@ -84,4 +85,8 @@ target_link_libraries(test_hook ${LIBS})
 add_executable(test_address tests/test_address.cpp)
 add_dependencies(test_address sylar)
 target_link_libraries(test_address ${LIBS})
+
+add_executable(test_socket tests/test_socket.cpp)
+add_dependencies(test_socket sylar)
+target_link_libraries(test_socket ${LIBS})
 

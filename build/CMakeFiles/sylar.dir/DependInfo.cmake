@@ -16,6 +16,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/iomanager.cpp" "CMakeFiles/sylar.dir/src/iomanager.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/iomanager.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/log.cpp" "CMakeFiles/sylar.dir/src/log.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/log.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/scheduler.cpp" "CMakeFiles/sylar.dir/src/scheduler.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/scheduler.cpp.o.d"
+  "/home/zhaoyangfan/LinuxStudio/server/sylar/src/socket.cpp" "CMakeFiles/sylar.dir/src/socket.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/socket.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/thread.cpp" "CMakeFiles/sylar.dir/src/thread.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/thread.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/timer.cpp" "CMakeFiles/sylar.dir/src/timer.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/timer.cpp.o.d"
   "/home/zhaoyangfan/LinuxStudio/server/sylar/src/util.cpp" "CMakeFiles/sylar.dir/src/util.cpp.o" "gcc" "CMakeFiles/sylar.dir/src/util.cpp.o.d"

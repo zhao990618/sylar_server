@@ -36,6 +36,11 @@
 },
 {
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/socket.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/socket.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/socket.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/scheduler.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/scheduler.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/scheduler.cpp"
 },
@@ -98,5 +103,10 @@
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_address.dir/tests/test_address.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_address.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_address.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_socket.dir/tests/test_socket.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_socket.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_socket.cpp"
 }
 ]

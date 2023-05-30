@@ -65,7 +65,9 @@
         "condition_variable": "cpp",
         "mutex": "cpp",
         "cfenv": "cpp",
-        "ios": "cpp"
+        "ios": "cpp",
+        "executor": "cpp",
+        "socket": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

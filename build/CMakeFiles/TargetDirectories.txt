@@ -8,5 +8,6 @@
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_iomanager.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_hook.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_address.dir
+/home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_socket.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/edit_cache.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/rebuild_cache.dir

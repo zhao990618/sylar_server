@@ -6,16 +6,18 @@
 #include <sys/uio.h>
 #include <sys/socket.h>
 #include <fcntl.h>
+#include <time.h>
 #include <unistd.h>
+#include <stdint.h>
 
 namespace sylar
 {
     bool is_hook_enable();
     void set_hook_enable(bool flag);    
 }
-#ifdef __cplusplus
+
 extern "C"{
-#endif
+
     /*sleep*/ 
     typedef unsigned int (*sleep_fun)(unsigned int seconds);
     extern sleep_fun sleep_f;
@@ -89,8 +91,9 @@ extern "C"{
     typedef int (*close_fun)(int fd);
     extern close_fun close_f;
 
-#ifdef __cplusplus
+    extern int connect_with_timeout(int sockfd, const struct sockaddr* addr, socklen_t addrlen, uint64_t timeout_ms);
+
 }
-#endif
+
 
 #endif
