@@ -67,7 +67,12 @@
         "cfenv": "cpp",
         "ios": "cpp",
         "executor": "cpp",
-        "socket": "cpp"
+        "socket": "cpp",
+        "forward_list": "cpp",
+        "buffer": "cpp",
+        "io_context": "cpp",
+        "netfwd": "cpp",
+        "future": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

@@ -130,9 +130,9 @@ namespace sylar
         private:
             // socket句柄
             int m_sock;
-            int m_family;
-            int m_type;
-            int m_protocol;
+            int m_family;   // IPv4 IPv6
+            int m_type;     // TCP UDP
+            int m_protocol; // 协议
             int m_isConnected;
 
             Address::ptr m_remoteAddress;

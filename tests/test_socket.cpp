@@ -36,7 +36,6 @@ void test_socket()
         SYLAR_LOG_INFO(g_logger) << "send fail rt=" << rt;
         return;
     }
-
     std::string buffs;
     buffs.resize(4096);
     // SYLAR_LOG_INFO(g_logger) << sizeof(buffs) << " " << buffs.size();

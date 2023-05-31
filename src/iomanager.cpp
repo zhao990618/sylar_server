@@ -399,7 +399,7 @@ namespace sylar
                 // 等待
                 // int epoll_wait(int __epfd, epoll_event *__events, int __maxevents, int __timeout)
                 rt = epoll_wait(m_epfd, events, MAX_EVNETS, (int)next_timeout);
-                SYLAR_LOG_INFO(g_logger) << "rt = " << rt;
+                SYLAR_LOG_INFO(g_logger) << "epoll_wait  rt = " << rt;
                 if (rt < 0 && errno == EINTR)//rt 小于0并且errno==EINTR是异常中断
                 {
                     perror("epoll_wait");
@@ -424,13 +424,14 @@ namespace sylar
             for (int i = 0; i < rt; ++i)
             {
                 epoll_event &event = events[i];
-                SYLAR_LOG_INFO(g_logger) << "event.fd = " << event.data.fd;
+                // SYLAR_LOG_INFO(g_logger) << "event fd = " << event.data.fd;
                 // 如果是读端
                 if (event.data.fd == m_tickleFds[0])
                 {
                     uint8_t dummy[256];
                     while (read(m_tickleFds[0], dummy, sizeof(dummy)) > 0)
                         ;
+                    SYLAR_LOG_INFO(g_logger) << dummy;
                     continue;
                 }
                 // void* 类型的指针转化为其他类型 需要强制转化
@@ -457,6 +458,7 @@ namespace sylar
                 {
                     continue;
                 }
+
                 int left_events = (fd_ctx->events & ~real_events);
                 int op = left_events ? EPOLL_CTL_MOD : EPOLL_CTL_DEL;
                 event.events = EPOLLET | left_events;
@@ -469,15 +471,18 @@ namespace sylar
                                               << rt2 << " (" << errno << ") (" << strerror(errno) << ")";
                     continue;
                 }
+
                 if (real_events & READ)
                 {
                     // 触发读事件
+                    SYLAR_LOG_INFO(g_logger) << "event fd = " << event.data.fd << " read event trigger";
                     fd_ctx->triggerEvent(READ);
                     --m_pendingEventCount;
                 }
                 if (real_events & WRITE)
                 {
                     // 触发写事件
+                    SYLAR_LOG_INFO(g_logger) << "event fd = " << event.data.fd << " write event trigger";
                     fd_ctx->triggerEvent(WRITE);
                     --m_pendingEventCount;
                 }

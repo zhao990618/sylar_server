@@ -77,8 +77,7 @@ public:
      * @param[in] family 协议族(AF_INT, AF_INT6, AF_UNIX)
      * @return 是否获取成功
      */
-    static bool GetInterfaceAddresses(std::multimap<std::string
-                    ,std::pair<Address::ptr, uint32_t> >& result,
+    static bool GetInterfaceAddresses(std::multimap<std::string, std::pair<Address::ptr, uint32_t> >& result,
                     int family = AF_INET);
     /**
      * @brief 获取指定网卡的地址和子网掩码位数

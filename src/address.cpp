@@ -47,7 +47,7 @@ namespace sylar
     {
         std::vector<Address::ptr> results;
         // 如果返回值是true，那就是有值的
-        if (Lookup(results, host, type, protocol))
+        if (Lookup(results, host, family, type, protocol))
         {
             return results[0];
         }
@@ -58,7 +58,7 @@ namespace sylar
     {
         std::vector<Address::ptr> results;
         // 如果返回值是true，那就是有值的
-        if (Lookup(results, host, type, protocol))
+        if (Lookup(results, host, family, type, protocol))
         {
             for (auto& i : results)
             {
@@ -134,7 +134,7 @@ namespace sylar
         {
             node = host;
         }
-        // 函数将主机名、主机地址、服务名和端口的字符串表示转换成套接字地址结构体
+        // 函数将主机名、主机地址、服务名和端口的字符串表示转换成套接字地址结构体 0 is succeds
         int error = getaddrinfo(node.c_str(), service, &hints, &results);
         if(error) {
             SYLAR_LOG_DEBUG(g_logger) << "Address::Lookup getaddress(" << host << ", "
@@ -246,16 +246,16 @@ namespace sylar
         Address::ptr result;
         switch (addr->sa_family)
         {
-        case AF_INET:
-            /* code */
-            result.reset(new IPv4Address(*(const sockaddr_in*)addr));
-            break;
-        case AF_INET6:
-            result.reset(new IPv6Address(*(const sockaddr_in6*)addr));
-            break;
-        default:
-            result.reset(new UnknowAddress(*addr));
-            break;
+            case AF_INET:
+                /* code */
+                result.reset(new IPv4Address(*(const sockaddr_in*)addr));
+                break;
+            case AF_INET6:
+                result.reset(new IPv6Address(*(const sockaddr_in6*)addr));
+                break;
+            default:
+                result.reset(new UnknowAddress(*addr));
+                break;
         }
         return result;
     }
@@ -377,7 +377,7 @@ namespace sylar
     std::ostream& IPv4Address::insert(std::ostream& os) const 
     {
         int32_t addr = byteswapOnLittleEndian(m_addr.sin_addr.s_addr);
-        // int 转 ipv4地址
+        // int 转 ipv4地址 0xff -> 00 00 00 ff 四个字节32位用来获取最后8位
         os << ((addr >> 24) & 0xff) << "."
            << ((addr >> 16) & 0xff) << "."
            << ((addr >> 8) & 0xff) << "."
@@ -386,6 +386,7 @@ namespace sylar
         return os;
     }
 
+    //  获取该地址的广播地址
     IPAddress::ptr IPv4Address::broadcastAddress(uint32_t prefix_len) 
     {
         if (prefix_len > 32)
@@ -398,6 +399,7 @@ namespace sylar
         return IPv4Address::ptr(new IPv4Address(baddr));
     }
 
+    // 网络地址
     IPAddress::ptr IPv4Address::networdAddress(uint32_t prefix_len) 
     {
         if (prefix_len > 32)
@@ -410,6 +412,7 @@ namespace sylar
         return IPv4Address::ptr(new IPv4Address(baddr));
     }
 
+    // 子网掩码地址
     IPAddress::ptr IPv4Address::subnetMask(uint32_t prefix_len) 
     {
         sockaddr_in subnet;
@@ -595,7 +598,7 @@ namespace sylar
     void UnixAddress::setAddrLen(uint32_t v) {
         m_length = v;
     }
-    
+
     sockaddr* UnixAddress::getAddr() {
         return (sockaddr*)&m_addr;
     }

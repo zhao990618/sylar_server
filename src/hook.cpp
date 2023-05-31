@@ -304,6 +304,7 @@ namespace sylar
             }
 
             int n = connect_f(sockfd, addr, addrlen);
+            // success
             if (n == 0)
             {
                 return 0;
@@ -325,6 +326,7 @@ namespace sylar
                 timer = iom->addConditionTimer(
                     timeout_ms, [winfo, sockfd, iom]()
                     {
+                        // 创建一个share_ptr指针t，共享winfo指向内存空间的权利
                         auto t = winfo.lock();
                         // 如果t不存在亦或者t的cancelled == true (意味着被取消了)
                         if (!t || t->cancelled)
@@ -366,11 +368,14 @@ namespace sylar
             int error = 0;
             socklen_t len = sizeof(int);
             // 看有没有error
+            /*
+                如果未发生错误， 则 getsockopt 返回零。 否则，将返回SOCKET_ERROR值
+            */
             if (-1 == getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &error, &len))
             {
                 return -1;
             }
-            // 如果没有错误
+            // 如果没有错误 error = 0(false) !error = true
             if (!error)
             {
                 return 0;
@@ -385,7 +390,6 @@ namespace sylar
 
         int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen)
         {
-
             return connect_with_timeout(sockfd, addr, addrlen, sylar::s_connect_timout);
         }
 

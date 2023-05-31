@@ -218,7 +218,7 @@ namespace sylar
         // 没有超时时间
         if (timeout_ms == (uint64_t)-1)
         {
-            // 0 success
+            // 0 success  连接需要用到address IP 所以Address一个类 socket一个类
             if (::connect(m_sock, addr->getAddr(), addr->getAddrLen()))
             {
                 SYLAR_LOG_ERROR(g_logger) << "sock=" << m_sock << " connect(" << addr->toString()
@@ -391,6 +391,7 @@ namespace sylar
         }
         socklen_t addrlen = result->getAddrLen();
         // 用于获取与某个套接字关联的远端协议地址--存储与result->m_addr
+        // on success zero return
         if(getpeername(m_sock, result->getAddr(), &addrlen)) {
             //SYLAR_LOG_ERROR(g_logger) << "getpeername error sock=" << m_sock
             //    << " errno=" << errno << " errstr=" << strerror(errno);
@@ -439,11 +440,13 @@ namespace sylar
         m_localAddress = result;
         return m_localAddress;
     }
+
     bool Socket::isValid() const
     {
         // 不等于-1， 那就是true；
         return m_sock != -1;
     }
+
     int Socket::getError()
     {
         int error = 0;
@@ -498,6 +501,17 @@ namespace sylar
     void Socket::initSock()
     {
         int val = 1;
+        /*
+            SOL_SOCKET: 基本套接口
+            IPPROTO_IP: IPv4套接口
+            IPPROTO_IPV6: IPv6套接口
+            IPPROTO_TCP: TCP套接口
+        */
+
+        /*
+            SO_REUSERADDR 允许重用本地地址和端口 int
+            充许绑定已被使用的地址（或端口号），可以参考bind的man
+        */
         setOption(SOL_SOCKET, SO_REUSEADDR, val);
         // 流式套接字 TCP
         if (m_type == SOCK_STREAM)

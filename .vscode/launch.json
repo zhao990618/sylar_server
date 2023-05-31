@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/../bin/test_hook",
+            "program": "${fileDirname}/../bin/test_socket",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
