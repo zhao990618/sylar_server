@@ -23,6 +23,7 @@ link_directories(/usr/local/lib)
 
 set(LIB_SRC
     src/address.cpp
+    src/bytearray.cpp
     src/config.cpp
     src/fd_manager.cpp
     src/fiber.cpp
@@ -89,4 +90,8 @@ target_link_libraries(test_address ${LIBS})
 add_executable(test_socket tests/test_socket.cpp)
 add_dependencies(test_socket sylar)
 target_link_libraries(test_socket ${LIBS})
+
+add_executable(test_bytearray tests/test_bytearray.cpp)
+add_dependencies(test_bytearray sylar)
+target_link_libraries(test_bytearray ${LIBS})
 

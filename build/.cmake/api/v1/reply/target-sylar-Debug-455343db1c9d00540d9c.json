@@ -26,7 +26,7 @@
 			{
 				"command" : 0,
 				"file" : 0,
-				"line" : 40,
+				"line" : 41,
 				"parent" : 0
 			},
 			{
@@ -79,7 +79,8 @@
 				8,
 				9,
 				10,
-				11
+				11,
+				12
 			]
 		}
 	],
@@ -124,7 +125,8 @@
 				8,
 				9,
 				10,
-				11
+				11,
+				12
 			]
 		}
 	],
@@ -134,6 +136,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "src/address.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "src/bytearray.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

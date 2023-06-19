@@ -6,6 +6,11 @@
 },
 {
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/bytearray.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/bytearray.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/bytearray.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/config.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/config.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/config.cpp"
 },
@@ -108,5 +113,10 @@
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_socket.dir/tests/test_socket.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_socket.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_socket.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_bytearray.dir/tests/test_bytearray.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_bytearray.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_bytearray.cpp"
 }
 ]

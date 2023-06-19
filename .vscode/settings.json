@@ -72,7 +72,8 @@
         "buffer": "cpp",
         "io_context": "cpp",
         "netfwd": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "typeindex": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

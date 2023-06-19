@@ -4,6 +4,9 @@
 #include <memory>
 #include <string>
 #include <stdint.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <vector>
 
 namespace sylar
 {
@@ -28,23 +31,23 @@ namespace sylar
             ~ByteArray();
 
             // write  1个字节到8个字节的int都提供
-            void writeFint8  (const int8_t& value);
-            void writeFuint8 (const uint8_t& value);
-            void writeFint16 (const int16_t& value);
-            void WriteFuint16(const uint16_t& value);
-            void writeFint32 (const int32_t& value);
-            void writeFuint32(const uint32_t& value);
-            void writeFint64 (const int64_t& value);
-            void writeFuint64(const uint64_t& value);
+            void writeFint8  (int8_t value);
+            void writeFuint8 (uint8_t value);
+            void writeFint16 (int16_t value);
+            void writeFuint16(uint16_t value);
+            void writeFint32 (int32_t value);
+            void writeFuint32(uint32_t value);
+            void writeFint64 (int64_t value);
+            void writeFuint64(uint64_t value);
 
             // 可变长度
-            void writeInt32  (const int32_t& value);
-            void writeUint32 (const uint32_t& value);
-            void writeInt64  (const int64_t& value);
-            void writeUint64 (const uint64_t& value);
+            void writeInt32  (int32_t value);
+            void writeUint32 (uint32_t value);
+            void writeInt64  (int64_t value);
+            void writeUint64 (uint64_t value);
 
-            void writeFloat  (const float& value);
-            void writeDouble (const double& value);
+            void writeFloat  (float value);
+            void writeDouble (double value);
             // length: int16 data
             void writeStringF16 (const std::string& value);
             // length: int32 data
@@ -76,24 +79,26 @@ namespace sylar
             double readDouble ();
 
             // length: int16 data
-            std::string& readStringF16 ();
+            std::string readStringF16 ();
             // length: int32 data
-            std::string& readStringF32 ();
+            std::string readStringF32 ();
             // length: int64 data
-            std::string& readStringF64 ();
+            std::string readStringF64 ();
             // length: varint data
-            std::string& readStringVint();
+            std::string readStringVint();
 
             // 内部操作
             void clear();
             void write(const void* buf, size_t size);
-            void read(char* buf, size_t size);
+            void read(void* buf, size_t size);
+            // 从m_position开始读，读size个字节, 不会修改m_cur和m_position
+            void read(void* buf, size_t size, size_t position) const;
 
             size_t getPosition() const {return m_position;};
             void setPosition(size_t v);
 
             bool writeToFile(const std::string& name) const;
-            void readFromFile(const std::string& name);
+            bool readFromFile(const std::string& name);
 
             // 返回Node的大小
             size_t getBaseSize() const {return m_baseSize;}
@@ -104,9 +109,16 @@ namespace sylar
             bool isLittleEndian() const;
             void setIsLittleEndian(bool val);
 
+            std::string toString() const;
+            std::string toHexString() const;
+
+            // 获取可读取的缓存,保存成iovec数组
+            uint64_t getReadBuffers(std::vector<iovec>& buffers, uint64_t len = ~0ull) const;
+            uint64_t getReadBuffers(std::vector<iovec>& buffers, uint64_t len, uint64_t position) const;
+            uint64_t getWriteBuffers(std::vector<iovec>& buffers, uint64_t len);
         private:
-            // 设置当前的容量
-            void setCapacity(size_t size);
+            // 设置容量分配
+            void addCapacity(size_t size);
             // 返回当前剩余的容量
             size_t getCapacity() const {return m_capacity - m_position;}
         private:

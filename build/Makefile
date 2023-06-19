@@ -262,6 +262,19 @@ test_socket/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_socket.dir/build.make CMakeFiles/test_socket.dir/build
 .PHONY : test_socket/fast
 
+#=============================================================================
+# Target rules for targets named test_bytearray
+
+# Build rule for target.
+test_bytearray: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_bytearray
+.PHONY : test_bytearray
+
+# fast build rule for target.
+test_bytearray/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bytearray.dir/build.make CMakeFiles/test_bytearray.dir/build
+.PHONY : test_bytearray/fast
+
 src/address.o: src/address.cpp.o
 .PHONY : src/address.o
 
@@ -285,6 +298,30 @@ src/address.s: src/address.cpp.s
 src/address.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/address.cpp.s
 .PHONY : src/address.cpp.s
+
+src/bytearray.o: src/bytearray.cpp.o
+.PHONY : src/bytearray.o
+
+# target to build an object file
+src/bytearray.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/bytearray.cpp.o
+.PHONY : src/bytearray.cpp.o
+
+src/bytearray.i: src/bytearray.cpp.i
+.PHONY : src/bytearray.i
+
+# target to preprocess a source file
+src/bytearray.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/bytearray.cpp.i
+.PHONY : src/bytearray.cpp.i
+
+src/bytearray.s: src/bytearray.cpp.s
+.PHONY : src/bytearray.s
+
+# target to generate assembly for a file
+src/bytearray.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/bytearray.cpp.s
+.PHONY : src/bytearray.cpp.s
 
 src/config.o: src/config.cpp.o
 .PHONY : src/config.o
@@ -598,6 +635,30 @@ tests/test_address.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_address.dir/build.make CMakeFiles/test_address.dir/tests/test_address.cpp.s
 .PHONY : tests/test_address.cpp.s
 
+tests/test_bytearray.o: tests/test_bytearray.cpp.o
+.PHONY : tests/test_bytearray.o
+
+# target to build an object file
+tests/test_bytearray.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bytearray.dir/build.make CMakeFiles/test_bytearray.dir/tests/test_bytearray.cpp.o
+.PHONY : tests/test_bytearray.cpp.o
+
+tests/test_bytearray.i: tests/test_bytearray.cpp.i
+.PHONY : tests/test_bytearray.i
+
+# target to preprocess a source file
+tests/test_bytearray.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bytearray.dir/build.make CMakeFiles/test_bytearray.dir/tests/test_bytearray.cpp.i
+.PHONY : tests/test_bytearray.cpp.i
+
+tests/test_bytearray.s: tests/test_bytearray.cpp.s
+.PHONY : tests/test_bytearray.s
+
+# target to generate assembly for a file
+tests/test_bytearray.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_bytearray.dir/build.make CMakeFiles/test_bytearray.dir/tests/test_bytearray.cpp.s
+.PHONY : tests/test_bytearray.cpp.s
+
 tests/test_config.o: tests/test_config.cpp.o
 .PHONY : tests/test_config.o
 
@@ -801,6 +862,7 @@ help:
 	@echo "... main_test"
 	@echo "... sylar"
 	@echo "... test_address"
+	@echo "... test_bytearray"
 	@echo "... test_config"
 	@echo "... test_fiber"
 	@echo "... test_hook"
@@ -812,6 +874,9 @@ help:
 	@echo "... src/address.o"
 	@echo "... src/address.i"
 	@echo "... src/address.s"
+	@echo "... src/bytearray.o"
+	@echo "... src/bytearray.i"
+	@echo "... src/bytearray.s"
 	@echo "... src/config.o"
 	@echo "... src/config.i"
 	@echo "... src/config.s"
@@ -851,6 +916,9 @@ help:
 	@echo "... tests/test_address.o"
 	@echo "... tests/test_address.i"
 	@echo "... tests/test_address.s"
+	@echo "... tests/test_bytearray.o"
+	@echo "... tests/test_bytearray.i"
+	@echo "... tests/test_bytearray.s"
 	@echo "... tests/test_config.o"
 	@echo "... tests/test_config.i"
 	@echo "... tests/test_config.s"
