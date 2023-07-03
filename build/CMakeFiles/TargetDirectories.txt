@@ -10,5 +10,8 @@
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_address.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_socket.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_bytearray.dir
+/home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_ba.dir
+/home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_http.dir
+/home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/test_http_parser.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/edit_cache.dir
 /home/zhaoyangfan/LinuxStudio/server/sylar/build/CMakeFiles/rebuild_cache.dir

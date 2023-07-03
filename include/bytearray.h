@@ -21,7 +21,7 @@ namespace sylar
                 Node();
                 ~Node();
 
-                char* ptr;
+                char* ptr; // char -> new char[s]
                 Node* next;
                 size_t size;
             };
@@ -102,8 +102,11 @@ namespace sylar
 
             // 返回Node的大小
             size_t getBaseSize() const {return m_baseSize;}
+            
             // 返回还可以读的大小
             size_t getReadSize() const {return m_size - m_position;}
+
+            size_t getSize() {return m_size;}
 
             // 设置网络字节序
             bool isLittleEndian() const;
@@ -114,7 +117,9 @@ namespace sylar
 
             // 获取可读取的缓存,保存成iovec数组
             uint64_t getReadBuffers(std::vector<iovec>& buffers, uint64_t len = ~0ull) const;
+            
             uint64_t getReadBuffers(std::vector<iovec>& buffers, uint64_t len, uint64_t position) const;
+            
             uint64_t getWriteBuffers(std::vector<iovec>& buffers, uint64_t len);
         private:
             // 设置容量分配

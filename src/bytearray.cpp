@@ -309,7 +309,7 @@ namespace sylar
             }
             else
             { // 每7位 添加一次值
-                result |= (((uint32_t)(b & 0x7F)) << i);
+                result |= (((uint32_t)(b & 0x7f)) << i);
             }
         }
         return result;
@@ -335,7 +335,7 @@ namespace sylar
             }
             else
             { // 每7位 添加一次值
-                result |= (((uint64_t)(b & 0x7F)) << i);
+                result |= (((uint64_t)(b & 0x7f)) << i);
             }
         }
         return result;
@@ -412,10 +412,10 @@ namespace sylar
         m_root->next = NULL;
     }
 
-    void ByteArray::write(const void *buf, size_t size)
+
+    void ByteArray::write(const void* buf, size_t size) 
     {
-        if (size == 0)
-        {
+        if(size == 0) {
             return;
         }
         // 设置内存大小
@@ -427,13 +427,14 @@ namespace sylar
         // 已经写入的偏移量
         size_t bpos = 0;
 
-        while (size > 0)
+        while(size > 0) 
         {
             // 如果容量大于 size，即可以完全装下
-            if (ncap >= size)
-            {
+            if(ncap >= size) 
+            {   // char* m_cur->ptr 指向一个字符对象
                 memcpy(m_cur->ptr + npos, (const char*)buf + bpos, size);
-                if(m_cur->size == (npos + size)) {
+                if(m_cur->size == (npos + size)) 
+                {
                     m_cur = m_cur->next;
                 }
                 // 写完后，位置后移size位
@@ -441,9 +442,8 @@ namespace sylar
                 // 已经写入的偏移量 + size
                 bpos += size;
                 size = 0;
-            }
-            else
-            {
+            } else 
+            {   // bpos 用于表示buf中已经被读或者写的数据量
                 memcpy(m_cur->ptr + npos, (const char*)buf + bpos, ncap);
                 // 写完后，位置后移size位
                 m_position += ncap;
@@ -455,16 +455,14 @@ namespace sylar
                 // 当前节点容量
                 ncap = m_cur->size;
                 // 当前新节点的偏移量为0
-                bpos = 0;
+                npos = 0;
             }
         }
-
-        if (m_position > m_size)
-        {
+        // m_capacity因为扩容后可以填入数据， m_position就是填入后的数据， m_size 表示当前真实填入数据的大小
+        if(m_position > m_size) {
             m_size = m_position;
         }
-
-    }
+}
 
     void ByteArray::read(void *buf, size_t size)
     {
@@ -494,7 +492,7 @@ namespace sylar
                 size = 0;
             } 
             else
-            {
+            {   // bpos 用于表示buf中已经被读或者写的数据量
                 memcpy((char*)buf + bpos, m_cur->ptr + npos, ncap);
                 m_position += ncap;
                 bpos += ncap;
@@ -551,12 +549,13 @@ namespace sylar
     void ByteArray::setPosition(size_t v)
     {
         // 如果超出最大范围
-        if (v > m_size)
+        if (v > m_capacity)
         {
             throw std::out_of_range("set_position out of range");
         }
         // 更新position
         m_position = v;
+        // m_size 是最大内容
         if (m_position > m_size)
         {
             m_size = m_position;
@@ -578,27 +577,26 @@ namespace sylar
     {
         std::ofstream ofs;
         ofs.open(name, std::ios::trunc | std::ios::binary);
-        if (!ofs)
-        {
-            SYLAR_LOG_INFO(g_logger) << "writeToFile name=" << name 
-                    << " error, errno=" << errno << "errstr=" << strerror(errno);
+        if(!ofs) {
+            SYLAR_LOG_ERROR(g_logger) << "writeToFile name=" << name
+                << " error , errno=" << errno << " errstr=" << strerror(errno);
             return false;
         }
         // 可读大小
-        int64_t read_size = getReadSize();
+        int64_t read_size = getReadSize(); //m_size - m_position;
         int64_t pos = m_position;
         Node* cur = m_cur;
+
         while(read_size > 0) {
-            // 
             int diff = pos % m_baseSize;
-            // 可以填入的长度
+            // 可以填入的长度 --- 因为存放单位是 bytearray
             int64_t len = (read_size > (int64_t)m_baseSize ? m_baseSize : read_size) - diff;
-            // 写入到ofs中
             ofs.write(cur->ptr + diff, len);
             cur = cur->next;
             pos += len;
             read_size -= len;
         }
+
         return true;
     }
 
@@ -606,17 +604,15 @@ namespace sylar
     {
         std::ifstream ifs;
         ifs.open(name, std::ios::binary);
-        if (!ifs)
-        {
+        if(!ifs) {
             SYLAR_LOG_ERROR(g_logger) << "readFromFile name=" << name
                 << " error, errno=" << errno << " errstr=" << strerror(errno);
-            return false;            
+            return false;
         }
         // buff智能指针 --- 指向一个char类型的数组，然后自带一个析构函数[内保存的是传入的参数]（内保存的是自己创建的函数）
         std::shared_ptr<char> buff(new char[m_baseSize], [](char* ptr) { delete[] ptr;});
         // eof() 是读取到文件结束符 返回true
-        while(!ifs.eof()) 
-        {
+        while(!ifs.eof()) {
             ifs.read(buff.get(), m_baseSize);
             // gcount 返回最后一个输入操作读取的字符数目。
             write(buff.get(), ifs.gcount());
@@ -730,7 +726,7 @@ namespace sylar
         {
             return;
         }
-        size_t old_cap = getCapacity();
+        size_t old_cap = getCapacity();// m_capacity(1) - m_position(0)
         // 剩余的容量如果比size大，那就直接退出，因为有充足的空间存储
         if (old_cap >= size)
         {

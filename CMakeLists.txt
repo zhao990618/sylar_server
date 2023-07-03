@@ -28,6 +28,10 @@ set(LIB_SRC
     src/fd_manager.cpp
     src/fiber.cpp
     src/hook.cpp
+    src/http/http.cpp
+    src/http/http11_parser.rl.cpp
+    src/http/httpclient_parser.rl.cpp
+    src/http/http_parser.cpp
     src/iomanager.cpp
     src/log.cpp  
     src/socket.cpp
@@ -95,3 +99,14 @@ add_executable(test_bytearray tests/test_bytearray.cpp)
 add_dependencies(test_bytearray sylar)
 target_link_libraries(test_bytearray ${LIBS})
 
+add_executable(test_ba tests/test_ba.cpp)
+add_dependencies(test_ba sylar)
+target_link_libraries(test_ba ${LIBS})
+
+add_executable(test_http tests/test_http.cpp)
+add_dependencies(test_http sylar)
+target_link_libraries(test_http ${LIBS})
+
+add_executable(test_http_parser tests/test_http_parser.cpp)
+add_dependencies(test_http_parser sylar)
+target_link_libraries(test_http_parser ${LIBS})

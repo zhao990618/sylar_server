@@ -31,6 +31,26 @@
 },
 {
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/http/http.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/http/http11_parser.rl.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http11_parser.rl.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http11_parser.rl.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/http/httpclient_parser.rl.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/http/httpclient_parser.rl.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/http/httpclient_parser.rl.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/http/http_parser.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http_parser.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http_parser.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/iomanager.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/iomanager.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/iomanager.cpp"
 },
@@ -118,5 +138,20 @@
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_bytearray.dir/tests/test_bytearray.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_bytearray.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_bytearray.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_ba.dir/tests/test_ba.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_ba.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_ba.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_http.dir/tests/test_http.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_http.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_http.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_http_parser.dir/tests/test_http_parser.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_http_parser.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_http_parser.cpp"
 }
 ]
