@@ -139,6 +139,7 @@ namespace sylar
             Address::ptr m_localAddress;
 
     };
+    std::ostream& operator<< (std::ostream& os, const Socket& addr);
 }
 
 #endif

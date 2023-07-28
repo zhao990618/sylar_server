@@ -183,10 +183,10 @@ namespace sylar
             }
             else
             {
-                SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
+                // SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
                 // event添加成功
                 sylar::Fiber::YieldToHold();
-                SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
+                // SYLAR_LOG_DEBUG(g_logger) << "do_io<" << hook_fun_name << ">";
                 // 如果fiber 被唤醒回来timer还存在的话，那就取消掉timer
                 if (timer)
                 {

@@ -399,7 +399,7 @@ namespace sylar
                 // 等待
                 // int epoll_wait(int __epfd, epoll_event *__events, int __maxevents, int __timeout)
                 rt = epoll_wait(m_epfd, events, MAX_EVNETS, (int)next_timeout);
-                SYLAR_LOG_INFO(g_logger) << "epoll_wait  rt = " << rt;
+                // SYLAR_LOG_INFO(g_logger) << "epoll_wait  rt = " << rt;
                 if (rt < 0 && errno == EINTR)//rt 小于0并且errno==EINTR是异常中断
                 {
                     perror("epoll_wait");
@@ -492,7 +492,7 @@ namespace sylar
             auto raw_cur = cur.get();
             // 释放当前Fiber
             cur.reset();
-            SYLAR_LOG_INFO(g_logger) << "io idle end";
+            // SYLAR_LOG_INFO(g_logger) << "io idle end";
 
             raw_cur->swapOut();
         }

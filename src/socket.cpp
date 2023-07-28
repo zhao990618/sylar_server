@@ -143,17 +143,19 @@ namespace sylar
             << errno << " errstr=" << strerror(errno);
             return nullptr;      
         }
+        SYLAR_LOG_INFO(g_logger) << "newsock = " << newsock;
         // 成功的句柄用来初始化
         if(sock->init(newsock)) {
             return sock;
         }
+        // SYLAR_LOG_INFO(g_logger) << "return nullptr";
         return nullptr; 
     }
 
     // 对句柄做初始化
     bool Socket::init(int sock)
     {
-        FdCtx::ptr ctx = FdMgr::GetInstance()->get(m_sock);
+        FdCtx::ptr ctx = FdMgr::GetInstance()->get(sock);
         if (ctx && ctx->isSocket() && !ctx->isClose())
         {
             m_sock = sock;
@@ -533,5 +535,10 @@ namespace sylar
                 << ", " << m_type << ", " << m_protocol << ") errno="
                 << errno << " errstr=" << strerror(errno);
         }
+    }
+
+    std::ostream& operator<< (std::ostream& os, const Socket& addr)
+    {
+        return addr.dump(os);
     }
 }

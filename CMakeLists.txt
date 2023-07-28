@@ -32,10 +32,14 @@ set(LIB_SRC
     src/http/http11_parser.rl.cpp
     src/http/httpclient_parser.rl.cpp
     src/http/http_parser.cpp
+    src/http/http_session.cpp
+    src/stream/socket_stream.cpp
     src/iomanager.cpp
     src/log.cpp  
+    src/tcp_server.cpp
     src/socket.cpp
     src/scheduler.cpp 
+    src/stream.cpp
     src/thread.cpp
     src/util.cpp
     src/timer.cpp 
@@ -110,3 +114,11 @@ target_link_libraries(test_http ${LIBS})
 add_executable(test_http_parser tests/test_http_parser.cpp)
 add_dependencies(test_http_parser sylar)
 target_link_libraries(test_http_parser ${LIBS})
+
+add_executable(test_tcp_server tests/test_tcp_server.cpp)
+add_dependencies(test_tcp_server sylar)
+target_link_libraries(test_tcp_server ${LIBS})
+
+add_executable(echo_server examples/echo_server.cpp)
+add_dependencies(echo_server sylar)
+target_link_libraries(echo_server ${LIBS})

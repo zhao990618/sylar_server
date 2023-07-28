@@ -1,5 +1,5 @@
 #ifndef __SYLAR_HTTP_HTTP_H__
-#define __SYLAR_HTTP_FTTP_H__
+#define __SYLAR_HTTP_HTTP_H__
 
 #include <memory>
 #include <string>
@@ -290,6 +290,8 @@ namespace sylar
                 std::ostream& dump(std::ostream& os) const;
                 void setMethod(HttpMethod v) { m_method = v;}
                 std::string toString() const;
+
+                void init();
             private:
 
 
@@ -377,7 +379,21 @@ namespace sylar
                 std::vector<std::string> m_cookies;
         };
 
+        /**
+         * @brief 流式输出HttpRequest
+         * @param[in, out] os 输出流
+         * @param[in] req HTTP请求
+         * @return 输出流
+         */
+        std::ostream& operator<<(std::ostream& os, const HttpRequest& req);
 
+        /**
+         * @brief 流式输出HttpResponse
+         * @param[in, out] os 输出流
+         * @param[in] rsp HTTP响应
+         * @return 输出流
+         */
+        std::ostream& operator<<(std::ostream& os, const HttpResponse& rsp);
     }
 
 }

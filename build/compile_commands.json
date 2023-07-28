@@ -51,6 +51,16 @@
 },
 {
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/http/http_session.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http_session.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/http/http_session.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/stream/socket_stream.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/stream/socket_stream.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/stream/socket_stream.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/iomanager.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/iomanager.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/iomanager.cpp"
 },
@@ -61,6 +71,11 @@
 },
 {
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/tcp_server.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/tcp_server.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/tcp_server.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/socket.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/socket.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/socket.cpp"
 },
@@ -68,6 +83,11 @@
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/scheduler.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/scheduler.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/scheduler.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++ -Dsylar_EXPORTS -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -fPIC -o CMakeFiles/sylar.dir/src/stream.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/src/stream.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/src/stream.cpp"
 },
 {
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
@@ -153,5 +173,15 @@
   "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
   "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_http_parser.dir/tests/test_http_parser.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_http_parser.cpp",
   "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_http_parser.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/test_tcp_server.dir/tests/test_tcp_server.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_tcp_server.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/tests/test_tcp_server.cpp"
+},
+{
+  "directory": "/home/zhaoyangfan/LinuxStudio/server/sylar/build",
+  "command": "/usr/bin/g++  -I/home/zhaoyangfan/LinuxStudio/server/sylar/include  -rdynamic -O3 -fPIC -ggdb -std=c++11 -Wall -Wno-deprecated -Wno-unused-function -g -o CMakeFiles/echo_server.dir/examples/echo_server.cpp.o -c /home/zhaoyangfan/LinuxStudio/server/sylar/examples/echo_server.cpp",
+  "file": "/home/zhaoyangfan/LinuxStudio/server/sylar/examples/echo_server.cpp"
 }
 ]

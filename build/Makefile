@@ -314,6 +314,56 @@ test_http_parser/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_http_parser.dir/build.make CMakeFiles/test_http_parser.dir/build
 .PHONY : test_http_parser/fast
 
+#=============================================================================
+# Target rules for targets named test_tcp_server
+
+# Build rule for target.
+test_tcp_server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_tcp_server
+.PHONY : test_tcp_server
+
+# fast build rule for target.
+test_tcp_server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_tcp_server.dir/build.make CMakeFiles/test_tcp_server.dir/build
+.PHONY : test_tcp_server/fast
+
+#=============================================================================
+# Target rules for targets named echo_server
+
+# Build rule for target.
+echo_server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 echo_server
+.PHONY : echo_server
+
+# fast build rule for target.
+echo_server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/echo_server.dir/build.make CMakeFiles/echo_server.dir/build
+.PHONY : echo_server/fast
+
+examples/echo_server.o: examples/echo_server.cpp.o
+.PHONY : examples/echo_server.o
+
+# target to build an object file
+examples/echo_server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/echo_server.dir/build.make CMakeFiles/echo_server.dir/examples/echo_server.cpp.o
+.PHONY : examples/echo_server.cpp.o
+
+examples/echo_server.i: examples/echo_server.cpp.i
+.PHONY : examples/echo_server.i
+
+# target to preprocess a source file
+examples/echo_server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/echo_server.dir/build.make CMakeFiles/echo_server.dir/examples/echo_server.cpp.i
+.PHONY : examples/echo_server.cpp.i
+
+examples/echo_server.s: examples/echo_server.cpp.s
+.PHONY : examples/echo_server.s
+
+# target to generate assembly for a file
+examples/echo_server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/echo_server.dir/build.make CMakeFiles/echo_server.dir/examples/echo_server.cpp.s
+.PHONY : examples/echo_server.cpp.s
+
 src/address.o: src/address.cpp.o
 .PHONY : src/address.o
 
@@ -530,6 +580,30 @@ src/http/http_parser.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/http/http_parser.cpp.s
 .PHONY : src/http/http_parser.cpp.s
 
+src/http/http_session.o: src/http/http_session.cpp.o
+.PHONY : src/http/http_session.o
+
+# target to build an object file
+src/http/http_session.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/http/http_session.cpp.o
+.PHONY : src/http/http_session.cpp.o
+
+src/http/http_session.i: src/http/http_session.cpp.i
+.PHONY : src/http/http_session.i
+
+# target to preprocess a source file
+src/http/http_session.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/http/http_session.cpp.i
+.PHONY : src/http/http_session.cpp.i
+
+src/http/http_session.s: src/http/http_session.cpp.s
+.PHONY : src/http/http_session.s
+
+# target to generate assembly for a file
+src/http/http_session.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/http/http_session.cpp.s
+.PHONY : src/http/http_session.cpp.s
+
 src/http/httpclient_parser.rl.o: src/http/httpclient_parser.rl.cpp.o
 .PHONY : src/http/httpclient_parser.rl.o
 
@@ -649,6 +723,78 @@ src/socket.s: src/socket.cpp.s
 src/socket.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/socket.cpp.s
 .PHONY : src/socket.cpp.s
+
+src/stream.o: src/stream.cpp.o
+.PHONY : src/stream.o
+
+# target to build an object file
+src/stream.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/stream.cpp.o
+.PHONY : src/stream.cpp.o
+
+src/stream.i: src/stream.cpp.i
+.PHONY : src/stream.i
+
+# target to preprocess a source file
+src/stream.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/stream.cpp.i
+.PHONY : src/stream.cpp.i
+
+src/stream.s: src/stream.cpp.s
+.PHONY : src/stream.s
+
+# target to generate assembly for a file
+src/stream.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/stream.cpp.s
+.PHONY : src/stream.cpp.s
+
+src/stream/socket_stream.o: src/stream/socket_stream.cpp.o
+.PHONY : src/stream/socket_stream.o
+
+# target to build an object file
+src/stream/socket_stream.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/stream/socket_stream.cpp.o
+.PHONY : src/stream/socket_stream.cpp.o
+
+src/stream/socket_stream.i: src/stream/socket_stream.cpp.i
+.PHONY : src/stream/socket_stream.i
+
+# target to preprocess a source file
+src/stream/socket_stream.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/stream/socket_stream.cpp.i
+.PHONY : src/stream/socket_stream.cpp.i
+
+src/stream/socket_stream.s: src/stream/socket_stream.cpp.s
+.PHONY : src/stream/socket_stream.s
+
+# target to generate assembly for a file
+src/stream/socket_stream.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/stream/socket_stream.cpp.s
+.PHONY : src/stream/socket_stream.cpp.s
+
+src/tcp_server.o: src/tcp_server.cpp.o
+.PHONY : src/tcp_server.o
+
+# target to build an object file
+src/tcp_server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/tcp_server.cpp.o
+.PHONY : src/tcp_server.cpp.o
+
+src/tcp_server.i: src/tcp_server.cpp.i
+.PHONY : src/tcp_server.i
+
+# target to preprocess a source file
+src/tcp_server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/tcp_server.cpp.i
+.PHONY : src/tcp_server.cpp.i
+
+src/tcp_server.s: src/tcp_server.cpp.s
+.PHONY : src/tcp_server.s
+
+# target to generate assembly for a file
+src/tcp_server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sylar.dir/build.make CMakeFiles/sylar.dir/src/tcp_server.cpp.s
+.PHONY : src/tcp_server.cpp.s
 
 src/thread.o: src/thread.cpp.o
 .PHONY : src/thread.o
@@ -1010,6 +1156,30 @@ tests/test_socket.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_socket.dir/build.make CMakeFiles/test_socket.dir/tests/test_socket.cpp.s
 .PHONY : tests/test_socket.cpp.s
 
+tests/test_tcp_server.o: tests/test_tcp_server.cpp.o
+.PHONY : tests/test_tcp_server.o
+
+# target to build an object file
+tests/test_tcp_server.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_tcp_server.dir/build.make CMakeFiles/test_tcp_server.dir/tests/test_tcp_server.cpp.o
+.PHONY : tests/test_tcp_server.cpp.o
+
+tests/test_tcp_server.i: tests/test_tcp_server.cpp.i
+.PHONY : tests/test_tcp_server.i
+
+# target to preprocess a source file
+tests/test_tcp_server.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_tcp_server.dir/build.make CMakeFiles/test_tcp_server.dir/tests/test_tcp_server.cpp.i
+.PHONY : tests/test_tcp_server.cpp.i
+
+tests/test_tcp_server.s: tests/test_tcp_server.cpp.s
+.PHONY : tests/test_tcp_server.s
+
+# target to generate assembly for a file
+tests/test_tcp_server.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_tcp_server.dir/build.make CMakeFiles/test_tcp_server.dir/tests/test_tcp_server.cpp.s
+.PHONY : tests/test_tcp_server.cpp.s
+
 tests/test_thread.o: tests/test_thread.cpp.o
 .PHONY : tests/test_thread.o
 
@@ -1066,6 +1236,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
+	@echo "... echo_server"
 	@echo "... main_test"
 	@echo "... sylar"
 	@echo "... test_address"
@@ -1079,8 +1250,12 @@ help:
 	@echo "... test_iomanager"
 	@echo "... test_scheduler"
 	@echo "... test_socket"
+	@echo "... test_tcp_server"
 	@echo "... test_thread"
 	@echo "... test_util"
+	@echo "... examples/echo_server.o"
+	@echo "... examples/echo_server.i"
+	@echo "... examples/echo_server.s"
 	@echo "... src/address.o"
 	@echo "... src/address.i"
 	@echo "... src/address.s"
@@ -1108,6 +1283,9 @@ help:
 	@echo "... src/http/http_parser.o"
 	@echo "... src/http/http_parser.i"
 	@echo "... src/http/http_parser.s"
+	@echo "... src/http/http_session.o"
+	@echo "... src/http/http_session.i"
+	@echo "... src/http/http_session.s"
 	@echo "... src/http/httpclient_parser.rl.o"
 	@echo "... src/http/httpclient_parser.rl.i"
 	@echo "... src/http/httpclient_parser.rl.s"
@@ -1123,6 +1301,15 @@ help:
 	@echo "... src/socket.o"
 	@echo "... src/socket.i"
 	@echo "... src/socket.s"
+	@echo "... src/stream.o"
+	@echo "... src/stream.i"
+	@echo "... src/stream.s"
+	@echo "... src/stream/socket_stream.o"
+	@echo "... src/stream/socket_stream.i"
+	@echo "... src/stream/socket_stream.s"
+	@echo "... src/tcp_server.o"
+	@echo "... src/tcp_server.i"
+	@echo "... src/tcp_server.s"
 	@echo "... src/thread.o"
 	@echo "... src/thread.i"
 	@echo "... src/thread.s"
@@ -1168,6 +1355,9 @@ help:
 	@echo "... tests/test_socket.o"
 	@echo "... tests/test_socket.i"
 	@echo "... tests/test_socket.s"
+	@echo "... tests/test_tcp_server.o"
+	@echo "... tests/test_tcp_server.i"
+	@echo "... tests/test_tcp_server.s"
 	@echo "... tests/test_thread.o"
 	@echo "... tests/test_thread.i"
 	@echo "... tests/test_thread.s"
